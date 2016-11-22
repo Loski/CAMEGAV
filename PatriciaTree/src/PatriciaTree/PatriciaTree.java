@@ -7,12 +7,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 public class PatriciaTree implements RTrie{
 	   private String key;
 	   private PatriciaTree next;
 	   private PatriciaTree link;
-	   public static final char END_CHAR = '$';
+	   public static final String END_CHAR = "$";
 	
 	   public PatriciaTree(String key){
 		   this.next = null;
@@ -71,7 +72,7 @@ public class PatriciaTree implements RTrie{
 		    else if(prefixe_max == mot.length()){
 		        return t;  //SuccessFull Search
 		    }
-		    else if(prefixe_max== t.key.length()){   // Taille max du noeud, on a trouver le bon noeud, on regarde dans ses fils, tout en modifiant le string pour virer les trucs du mot déjà présent dans cette clé
+		    else if(prefixe_max == t.key.length()){   // Taille max du noeud, on a trouver le bon noeud, on regarde dans ses fils, tout en modifiant le string pour virer les trucs du mot déjà présent dans cette clé
 		        return find(t.link, mot.substring(mot.length() - prefixe_max));
 		    }
 		    return null;
@@ -92,7 +93,14 @@ public class PatriciaTree implements RTrie{
 		    int n = x.length();   
 		    int k = prefix(x, t.key);
 		    if( k==0 )
-		    	t.next = insertion(t.next,x);  
+		    	if(x.length() > 0 && t.key.length() > 0 && x.charAt(0) < t.key.charAt(0)){
+		    		PatriciaTree p = new PatriciaTree(x);
+		    		p.next = t;
+		    		return p;
+		    	}
+		    	else{
+		    		t.next = insertion(t.next,x);
+		    	}
 		    else if( k<=n )    
 		    {       
 		    	if( k <t.key.length() ) // cut or not to cut?
@@ -215,6 +223,62 @@ public class PatriciaTree implements RTrie{
 					str += this.next.parcourirArbreHTML();
 				return str + "</li>";
 			}
-    
+			
+		public ArrayList<String> ListeMot(){
+			return findWord(this.key);
+		}
+		
+		private ArrayList<String> findWord(String prefixe){
+			ArrayList<String> s = new ArrayList<String>();
+			if(this.key.endsWith(PatriciaTree.END_CHAR)){
+				s.add(prefixe+key);
+			}
+			else{
+				if(this.link != null){
+					s = this.link.findWord(prefixe + key);
+				}
+			}
+			if(this.next != null){
+				//ArrayList<String> tmp = ;
+				s.addAll(this.next.findWord(prefixe));
+			}
+			return s;
+		}
+		
+		public  int comptageMots(){
+			ArrayList<String> p =  this.ListeMot();
+			return p.size();
+		}
+		
+		public int prefixe(String mot){
+			int longueurMot = mot.length();
+			int prefixe_max = prefix(mot, this.key);
+			if(prefixe_max == 0){
+				if(this.next!= null)
+					return this.next.prefixe(mot);
+				else return 0;
+			}
+			else if(prefixe_max == longueurMot){
+				PatriciaTree p = this;
+				p.next = null;
+				return p.comptageMots();
+			}
+			else
+				return this.link.prefixe(mot.substring(prefixe_max));
+		}
+		
+	/*	public int hauteur(){
+			int taille_max = 0;
+			PatriciaTree t = this.next;
+			if(this.estVide())
+				return 0;
+			else{
+				while( t!= null){
+					taille_max = Math.max(taille_max, t.hauteur());
+					t = t.next;
+				}
+				return 1 + taille_max;
+			}
+		}*/
 }
 
