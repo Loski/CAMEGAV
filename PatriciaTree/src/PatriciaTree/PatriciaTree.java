@@ -8,53 +8,52 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PatriciaTree implements RTrie{
-	   private String key;
-	   private PatriciaTree next;
-	   private PatriciaTree link;
-	   public static final String END_CHAR = "$";
-	
+	public static final int ASCII_NUMBER = 128;
+	public static final int MIN_ASCII = 0;
+	   private Node frère[];
+	   public static final Character END_CHAR = new Character((char)7);
+
 	   public PatriciaTree(String key){
-		   this.next = null;
-		   this.link = null;
-		   this.key = key;
+		   this.createNode();
+		   this.frère[getIndexKey(key)] = new Node(key);
 	   }
 	   
-	   public PatriciaTree(){
-		   this.next = null;
-		   this.link = null;
-		   this.key = "";
+
+	   
+	   @Override
+	public String toString() {
+		String s = "";
+		for(Node n : this.frère){
+			if(n!=null){
+				s+=n.toString();
+			}
+		}
+		return s;
+	}
+
+	public PatriciaTree(){
+		   this.createNode();
+	}
+	   
+	   public void createNode(){
+		   this.frère = new Node[PatriciaTree.ASCII_NUMBER]; 
 	   }
-		@Override
-		public RTrie TrieVide() {
-			return new PatriciaTree();
-		}
-
-		@Override
-		public boolean estVide() {
-			if(this.key.equals("") && this.next == null && this.next ==null)
-				return true;
-			return false;
-		}
-
-		@Override
-		public String val() {
-			return this.key;
-		}
-
-		@Override
-		public RTrie sousArbre(int i) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public RTrie filsSauf(int i) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		public static int prefix(String  mot, String key){
+	   public static int getIndexKey(String key){
+		   try{
+			   if(key == null || key.isEmpty())
+				   throw new Exception("String vide !");
+		   }catch(Exception e){
+			   e.printStackTrace();
+			   System.err.println(e);
+		   }
+		   return (int)key.charAt(0) - MIN_ASCII;
+	   }
+	   
+		public static int prefixe(String  mot, String key){
 			int motLght = mot.length();
 			int keyLght = key.length();
 			 for( int k=0; k<motLght; k++ )
@@ -63,20 +62,7 @@ public class PatriciaTree implements RTrie{
 			 return motLght;
 		}
 		
-		public static PatriciaTree find(PatriciaTree t, String mot){
-		    if(t == null)
-		        return null;
-		    int prefixe_max = prefix(mot, t.key);
-		    if(prefixe_max == 0)
-		        return find(t.next, mot);  // On cherche dans les fr�res !
-		    else if(prefixe_max == mot.length()){
-		        return t;  //SuccessFull Search
-		    }
-		    else if(prefixe_max == t.key.length()){   // Taille max du noeud, on a trouver le bon noeud, on regarde dans ses fils, tout en modifiant le string pour virer les trucs du mot d�j� pr�sent dans cette cl�
-		        return find(t.link, mot.substring(mot.length() - prefixe_max));
-		    }
-		    return null;
-		}
+/*
 		
 		void split(int indexDivide) // dividing this node according to indexDivide key symbol
 		{   
@@ -86,35 +72,9 @@ public class PatriciaTree implements RTrie{
 			this.key = this.key.substring(0, indexDivide);
 		}
 		
-		public static PatriciaTree insertion(PatriciaTree t, String x) // inserting x key in t tree 
-		{
-		    if(t == null) 
-		    	return new PatriciaTree(x);
-		    int n = x.length();   
-		    int k = prefix(x, t.key);
-		    if( k==0 )
-		    	if(x.length() > 0 && t.key.length() > 0 && x.charAt(0) < t.key.charAt(0)){
-		    		PatriciaTree p = new PatriciaTree(x);
-		    		p.next = t;
-		    		return p;
-		    	}
-		    	else{
-		    		t.next = insertion(t.next,x);
-		    	}
-		    else if( k<=n )    
-		    {       
-		    	if( k <t.key.length() ) // cut or not to cut?
-			    		t.split(k);  
-			    	t.link = insertion(t.link,x.substring(k));  
-			}
-			    return t;
-		}
+
 		
-		
-		public static PatriciaTree insert(PatriciaTree t, String x){
-			return insertion(t, x+END_CHAR);
-		}
-		    
+
 		  public void join() // t and t->link nodes merge
 		  {
 		    	PatriciaTree p = this.link;
@@ -122,76 +82,81 @@ public class PatriciaTree implements RTrie{
 		    	this.key = mot_fusionne;
 		    	this.link = p.link;
 		  }
-		 /*   void join(node* t) // t and t->link nodes merge{
-		    node* p = t->link;  
-		    char* a = new char[t->len+p->len];
-		    strncpy(a,t->key,t->len);   
-		    strncpy(a+t->len,p->key,p->len); 
-		    delete[] t->key;    t->key = a;    
-		    t->len += p->len;  
-		    t->link = p->link; 
-		    delete p;}*/
-		  public static PatriciaTree remove(PatriciaTree t, String mot) // deleting x key from t tree 
-		  { 
+		*/
+		@Override
+		public RTrie suppression(String mot){
+			this.remove(this, mot + END_CHAR);
+			return this;
+		}
+		  private PatriciaTree remove(PatriciaTree t, String mot){ // deleting x key from t tree 
 			  if( t == null ) 
 				  return null;
 			  int n = mot.length();
-			  int k = prefix(mot, t.key);
-			  if( k==n ) // Delete leaf
-			  {   
-				  return t.next; 
-			  } 
-			  if( k==0)
-				  t.next = remove(t.next, mot);
-			  else if(k== t.key.length()) {
-				  t.link = remove(t.link, mot.substring(k)); // A v�rifier !!
+			  int index = PatriciaTree.getIndexKey(mot);
+			  Node node = t.frère[index];
+			  String key = node.getKey();
 			  
-					if( t.link != null && t.link.next == null){ // does t node have just one sister node?         
-						  t.join();
-					}
-			}
-				  return t;
+			  int prefixe = prefixe(mot, key);
+			  if( prefixe==n ) // Delete leaf
+			  {   
+				  t.frère[index] = null;
+			  }else if(prefixe == 0){ //n'existe pas
+				 
+			  }else if(prefixe == key.length()){
+				  this.remove(node.getLink(),  mot.substring(prefixe));
+				  if(node.getLink()!=null){
+					  Node node2 = node.getLink().nodeRemontable();
+					  if(node2 != null){
+						  node.setKey(node.getKey() + node2.getKey());
+						  node.setLink(node2.getLink());
+					  }
+				  }
+			  }
+			  return t;
 		  }
 		  
-			@Override
-			public String toString() {
-		String s =  "[key=" + key+ "]";
-		if(this.link!=null)
-			s+= "\n[  Children of " + key + "\t" + this.link.toString() + "]\n";
-		if(this.next!=null)
-			s+= "\\\t Brother of " + key + "\t" +this.next.toString() + " / ";
-		return s;
-	}
-			
+		  // S'il est forever alone, on peut le remonter
+		  public Node nodeRemontable(){
+			  int compteur = 0;
+			  Node node = null;
+			  for(Node n: this.frère){
+					if(n != null){
+						compteur++;
+						if(compteur >=2)
+							return null;
+						node = n;
+					}
+			  }
+			  return node;
+		  }
+
 
 		  public static PatriciaTree lectureFichier(String name){
 			  PatriciaTree t = new PatriciaTree();
 		        try {
 		            FileReader c = new FileReader(name+".txt");
 		            BufferedReader r = new BufferedReader(c);
-		 
 		            String line = r.readLine();
-		             
-		 
 		            while (line != null) {
 		                String[] decompose = line.split(" ");
-		                for(String s: decompose)
-		                	PatriciaTree.insert(t, s);
+		                for(String s: decompose){
+		                	t.insererMot(s);
+		                }
 		           line = r.readLine();
 		           }
 		 
 		            r.close();
 		 
 		        } catch (Exception e) {
+		        	e.printStackTrace();
 		            throw new Error(e);
 		        }
 				return t;
 		 
 		  }
 
-			public void printHTML(){
-				double[] data = {15.9, 21.2, 18.4, 25.4, 31.1};
-				File f = new File ("index.html");
+			public void printHTML(String name){
+				File f = new File (name+".html");
 				try
 				{
 				    PrintWriter pw = new PrintWriter (new BufferedWriter (new FileWriter (f)));
@@ -204,9 +169,10 @@ public class PatriciaTree implements RTrie{
 				    +"</head>"
 				    +"<body>"+
 				    "<div class='tree'><ul>");
-				    pw.println(parcourirArbreHTML());
+				    pw.println(parcourirArbre());
 				    pw.println("</ul></div></body></html>");
 				    pw.close();
+				    System.out.println("End generation " + name);
 				}
 				catch (IOException exception)
 				{
@@ -214,41 +180,36 @@ public class PatriciaTree implements RTrie{
 				}
 			}
 			
-			public String parcourirArbreHTML(){
-				String str = "<li><a href='#'>" + this.val() +"</a>";
-				if(this.link != null){
-					str += "<ul>" + this.link.parcourirArbreHTML()+ "</ul>";
+
+			public String parcourirArbre(){
+				String str ="";
+				for(Node n: this.frère){
+					if(n == null)
+						continue;
+					str+="<li><a href='#'>" + n.getKey() +"</a>";
+					if(n.getLink() != null){
+						str += "<ul>" + n.getLink().parcourirArbre()+ "</ul>";
+					}
 				}
-				if(this.next != null)
-					str += this.next.parcourirArbreHTML();
 				return str + "</li>";
 			}
-			
-		public ArrayList<String> ListeMot(){
-			return findWord(this.key);
-		}
-		
-		private ArrayList<String> findWord(String prefixe){
-			ArrayList<String> s = new ArrayList<String>();
-			if(this.key.endsWith(PatriciaTree.END_CHAR)){
-				s.add(prefixe+key);
-			}
-			else{
-				if(this.link != null){
-					s = this.link.findWord(prefixe + key);
+	
+			@Override
+		public ArrayList<String> listeMots(String prefixe){
+			ArrayList<String> liste = new ArrayList<String>();
+			for(Node n: this.frère){
+				if(n == null)
+					continue;
+				if(n.getKey().endsWith(END_CHAR.toString()))  // Fin mot
+					liste.add(prefixe  + n.getKey());
+				else if(n.getLink() != null){
+					liste.addAll(n.getLink().listeMots(prefixe+n.getKey()));
 				}
 			}
-			if(this.next != null){
-				//ArrayList<String> tmp = ;
-				s.addAll(this.next.findWord(prefixe));
-			}
-			return s;
+			return liste;
 		}
 		
-		public  int comptageMots(){
-			ArrayList<String> p =  this.ListeMot();
-			return p.size();
-		}
+/*
 		
 		public int prefixe(String mot){
 			int longueurMot = mot.length();
@@ -259,15 +220,15 @@ public class PatriciaTree implements RTrie{
 				else return 0;
 			}
 			else if(prefixe_max == longueurMot){
-				PatriciaTree p = this;
-				p.next = null;
-				return p.comptageMots();
+				if(this.key.endsWith(END_CHAR))
+					return 1;
+				return this.link.comptageMots();
 			}
 			else
 				return this.link.prefixe(mot.substring(prefixe_max));
 		}
 		
-	/*	public int hauteur(){
+		public int hauteur(){
 			int taille_max = 0;
 			PatriciaTree t = this.next;
 			if(this.estVide())
@@ -280,5 +241,196 @@ public class PatriciaTree implements RTrie{
 				return 1 + taille_max;
 			}
 		}*/
+		public PatriciaTree fils(int index){
+			return this.frère[index].getLink();
+		}
+		public RTrie insererMot(String mot) {
+			insert(this, mot+END_CHAR);
+			return this;
+		}
+		
+		public void setNode(int index, Node node){
+			this.frère[index] = node;
+		}
+		
+		public boolean insert(PatriciaTree t, String mot){
+			if(t == null){
+				t = new PatriciaTree(mot);
+			}
+			int index = t.getIndexKey(mot);
+			Node node  = t.frère[index];
+			if(node == null || t.isEmpty()){
+				t.setNode(index, new Node(mot));
+			}else{
+				String key = node.getKey();
+				int prefixe = prefixe(mot, key);
+				int taille_key = key.length();
+				if(prefixe == taille_key){ 
+					if(key.endsWith(END_CHAR.toString())) //Mot déjà présent !
+						return false;
+					else{
+						 insert(node.getLink(), mot.substring(prefixe));
+					}
+				}else{
+					PatriciaTree tmp = node.getLink();
+					String mot_prefixe = key.substring(0, prefixe);
+					String after = key.substring(prefixe);
+					node.setKey(mot_prefixe);
+					node.setLink(new PatriciaTree(after));
+					node.getLink().insererDansFils(after, tmp);
+					insert(node.getLink(), mot.substring(prefixe));
+					}
+				}
+			return true;
+		}
+		@Override
+		public void insererPhrase(String phrase) {
+			// TODO Auto-generated method stub
+			
+		}
+		public void insererDansFils(String key, PatriciaTree link){
+			this.frère[getIndexKey(key)].setLink(link);
+		}
+
+		@Override
+		public void insererListeMots(List<String> mots) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean rechercherMot(String mot) {
+			return search(this, mot+PatriciaTree.END_CHAR);
+		}
+		
+		public boolean search(PatriciaTree t, String mot){
+			if(t == null || mot.isEmpty() || t.isEmpty())
+				return false;
+			int index = PatriciaTree.getIndexKey(mot);
+			Node node  = t.frère[index];
+			if(node == null)
+				return false;
+			else{
+				String key = node.getKey();
+				int prefixe = prefixe(mot, key);
+				int taille_key = key.length();
+				if(prefixe == taille_key){ 
+					if(key.endsWith(END_CHAR.toString())) //Mot déjà présent !
+						return true;
+					else{
+						 return search(node.getLink(), mot.substring(prefixe));
+					}
+				}
+				else{
+					return false;
+				}
+			}
+		}
+
+		@Override
+		public int comptageMots() {
+			int cpt = 0;
+			for(Node n: this.frère){
+				if(n!=null) 
+				{
+					if(n.getKey().endsWith(END_CHAR.toString()))
+						cpt++;
+					else
+						if(n.getLink() != null)
+							cpt+= n.getLink().comptageMots();
+				}
+			}
+			return cpt;
+		}
+
+		@Override
+		public int comptageNil() {
+				int cpt = 0;
+				for(Node n: this.frère){
+					if(n==null) 
+						cpt++;
+					else{
+						if(n.getLink()!= null)
+							cpt += n.getLink().comptageNil();
+						else
+							cpt++;
+					}
+				}
+				return cpt;
+		}
+
+		@Override
+		public int hauteur() {
+			int hauteur = 0;
+			for(Node n : this.frère){
+				if(n != null){
+					if(n.getLink() != null){
+						hauteur = Math.max(hauteur, n.getLink().hauteur());
+					}
+				}	
+			}
+			return ++hauteur;
+		}
+
+		@Override
+		public double profondeurMoyenne() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+
+		@Override
+		public RTrie conversion() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+
+
+		@Override
+		public boolean isEmpty() {
+			if(this.frère != null){
+				for(Node n : this.frère){
+					if(n != null && n.getKey() != null)
+						return false;
+				}
+			}
+			return true;
+		}
+
+
+		@Override
+		public int prefixe(String mot) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + Arrays.hashCode(frère);
+			return result;
+		}
+
+
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			PatriciaTree other = (PatriciaTree) obj;
+			if (!Arrays.equals(frère, other.frère))
+				return false;
+			return true;
+		}
+
+		   
 }
 

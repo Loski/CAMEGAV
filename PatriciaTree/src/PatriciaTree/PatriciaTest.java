@@ -3,11 +3,16 @@ package PatriciaTree;
 public class PatriciaTest {
 
 	public static void main(String[] args) {
-		PatriciaTree p = PatriciaTree.lectureFichier("test");
-		System.out.println(p);
-		p.printHTML();
-		System.out.println(p.ListeMot().toString() + "\n" +p.comptageMots());
-		System.out.println(p.prefixe("dactylo"));
+		PatriciaTree p = new PatriciaTree("Vampire"+PatriciaTree.END_CHAR);
+		
+		PatriciaTree f = PatriciaTree.lectureFichier("jUnitTestFile");
+		f.printHTML("arbre");
+		System.out.println(f.listeMots(""));
+		System.out.println(f.comptageNil());
+		System.out.println(p.comptageMots());
+		p.printHTML("hello");
+		System.out.println(f.hauteur());
+		System.out.println((int)'\0');
 	}
 
 }
