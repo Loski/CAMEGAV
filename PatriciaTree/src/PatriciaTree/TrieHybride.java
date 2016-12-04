@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrieHybride{
+public class TrieHybride implements RTrie{
 	
 	private int ordreInsert;
 	private int lastInsert;
@@ -115,7 +115,7 @@ public class TrieHybride{
 		return this;
 	}
 	
-	public void ajouterMot(String mot) {
+	public void insererMot(String mot) {
 		
 		if (mot != null && !mot.isEmpty()) {
 			
@@ -226,7 +226,7 @@ public class TrieHybride{
 		return false;
 	}	
 	
-	public int comptageMot()
+	public int comptageMots()
 	{		
 		int nbTotal = 0;
 		
@@ -238,13 +238,13 @@ public class TrieHybride{
 			nbTotal=1;
 		
 		if(this.inf!=null)
-			nbMotBrancheInf += this.inf.comptageMot();
+			nbMotBrancheInf += this.inf.comptageMots();
 		
 		if(this.eq!=null)
-			nbMotBrancheEq += this.eq.comptageMot();
+			nbMotBrancheEq += this.eq.comptageMots();
 		
 		if(this.sup!=null)
-			nbMotBrancheSup += this.sup.comptageMot();
+			nbMotBrancheSup += this.sup.comptageMots();
 		
 		nbTotal += nbMotBrancheInf + nbMotBrancheEq + nbMotBrancheSup;
 		
@@ -272,7 +272,7 @@ public class TrieHybride{
 	public List<String> listeMots()
 	{
 		ArrayList<String> word = new ArrayList<String>();
-		return this.listeMots("",word);
+		return this.listeMots("", word);
 	}
 	
 	public int comptageNil()
@@ -335,7 +335,7 @@ public class TrieHybride{
 		return 1+maxOfNumbers(hauteurInf,hauteurEq,hauteurSup);
 	}
 	
-	public int profondeurMoyenne()
+	public double profondeurMoyenne()
 	{
 		return 0;
 	}
@@ -527,7 +527,7 @@ public class TrieHybride{
 	            while (line != null) {
 	                String[] decompose = line.split(" ");
 	                for(String s: decompose){
-	                	t.ajouterMot(s);
+	                	t.insererMot(s);
 	                }
 	           line = r.readLine();
 	           }

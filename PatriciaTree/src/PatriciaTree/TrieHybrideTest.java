@@ -7,10 +7,10 @@ public class TrieHybrideTest {
 	public static void main(String[] args) {
 		
 		TrieHybride t = new TrieHybride();
-		t.ajouterMot("m");
-		t.ajouterMot("kek");
-		t.ajouterMot("koala");
-		t.ajouterMot("ma");
+		t.insererMot("m");
+		t.insererMot("kek");
+		t.insererMot("koala");
+		t.insererMot("ma");
 		
 		//t = TrieHybride.lectureFichier("jUnitTestFile");
 		

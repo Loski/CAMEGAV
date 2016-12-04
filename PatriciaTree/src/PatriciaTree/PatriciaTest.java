@@ -4,13 +4,13 @@ public class PatriciaTest {
 	public final static  String FILE = "jUnitTestFile";
 
 	public static void main(String[] args) {
-		PatriciaTree p = new PatriciaTree("Vampire"+PatriciaTree.END_CHAR);
+		PatriciaTrie p = new PatriciaTrie("Vampire"+PatriciaTrie.END_CHAR);
 		p.insererMot("Vampirer");
 		p.printHTML("michel");
 		p.suppression("Vampirer");
 		p.printHTML("Arbre");
-		PatriciaTree.fusion(PatriciaTree.lectureFichier("FUSIONA"), PatriciaTree.lectureFichier("FUSIONB")).printHTML("FUSION");
-		PatriciaTree.lectureFichier("FUSIONALL").printHTML("NOFUSION");
+		PatriciaTrie.fusion(PatriciaTrie.lectureFichier("FUSIONA"), PatriciaTrie.lectureFichier("FUSIONB")).printHTML("FUSION");
+		PatriciaTrie.lectureFichier("FUSIONALL").printHTML("NOFUSION");
 		/*PatriciaTree f = PatriciaTree.lectureFichier("jUnitTestFile"); 
 		f.printHTML("arbre");
 		System.out.println(f.listeMots(""));

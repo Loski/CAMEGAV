@@ -2,17 +2,17 @@ package PatriciaTree;
 
 public class Node {
 		private String key;
-		private PatriciaTree link;
+		private PatriciaTrie link;
 		 public String getKey() {
 			return key;
 		}
 		public void setKey(String key) {
 			this.key = key;
 		}
-		public PatriciaTree getLink() {
+		public PatriciaTrie getLink() {
 			return link;
 		}
-		public void setLink(PatriciaTree link) {
+		public void setLink(PatriciaTrie link) {
 			this.link = link;
 		}
 		public Node(String mot) {
@@ -41,21 +41,21 @@ public class Node {
 			else if (copy == null){
 				return original;
 			}else{
-				int prefixe = PatriciaTree.prefixe(original.key, copy.key);
+				int prefixe = PatriciaTrie.prefixe(original.key, copy.key);
 				if(prefixe == original.key.length() && prefixe == copy.key.length()){
-					if(original.key.endsWith(PatriciaTree.END_CHAR.toString())){  //Même mot final sur le noeud
+					if(original.key.endsWith(PatriciaTrie.END_CHAR.toString())){  //Même mot final sur le noeud
 						return original;
 					}
 					else{
 						 //Même préfixe, on fusionne les fils.
 					}
 				}else{
-						original.link =	PatriciaTree.addPrefixEachWord(original.link, original.key.substring(prefixe));
+						original.link =	PatriciaTrie.addPrefixEachWord(original.link, original.key.substring(prefixe));
 						original.key = original.key.substring(0, prefixe);
-						copy.link = PatriciaTree.addPrefixEachWord(copy.link, copy.key.substring(prefixe));
+						copy.link = PatriciaTrie.addPrefixEachWord(copy.link, copy.key.substring(prefixe));
 						copy.key = copy.key.substring(0, prefixe);
 				}
-				original.link = PatriciaTree.fusion(original.link, copy.link);
+				original.link = PatriciaTrie.fusion(original.link, copy.link);
 			}
 			return original;
 		}

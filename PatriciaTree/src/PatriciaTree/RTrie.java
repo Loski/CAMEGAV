@@ -1,35 +1,33 @@
 package PatriciaTree;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface RTrie {
 	/**
-	 * Insère le nouveau mot dans l'arbre, 
-	 * avec un Arbre vide (cle = '\0') à la fin
+	 * Insï¿½re le nouveau mot dans l'arbre, 
+	 * avec un Arbre vide (cle = '\0') ï¿½ la fin
 	 * @return 
 	 * 
 	 */
-	public RTrie insererMot(String mot);
+	public void insererMot(String mot);
 	
 	/**
-	 * Insère la nouvelle phrase (phrase = suite de mots) dans l'arbre, 
-	 * avec un Arbre vide (cle = '\0') à la fin
+	 * Insï¿½re la nouvelle phrase (phrase = suite de mots) dans l'arbre, 
+	 * avec un Arbre vide (cle = '\0') ï¿½ la fin
 	 * 
 	 */
-	public void insererPhrase(String phrase);
-
-	public void insererListeMots(List<String> mots);
 	
 	/**
 	 * Retourne vrai si le mot est contenu dans l'arbre
 	 */
-	public boolean rechercherMot(String mot);
+	public boolean recherche(String mot);
 	
 	public int comptageMots();
 	
 	public int comptageNil();
 	
-	public List<String> listeMots(String prefixe);
+	public List<String> listeMots();
 	
 	public int hauteur();
 	
@@ -37,10 +35,10 @@ public interface RTrie {
 	
 	public int prefixe(String mot);
 	
-	public RTrie suppression(String mot);
+	public void suppression(String mot);
+		
+	public boolean estVide();
 	
-	public RTrie conversion();
-	
-	public boolean isEmpty();
+//	public void affichage(); ?
 
 }
