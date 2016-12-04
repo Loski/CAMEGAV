@@ -17,6 +17,8 @@ public class Node {
 		}
 		public Node(String mot) {
 			this.link = null;
+			if(!mot.endsWith(PatriciaTree.END_CHAR.toString()))
+				mot+=PatriciaTree.END_CHAR;
 			this.key = mot;
 		}
 		@Override
@@ -24,7 +26,7 @@ public class Node {
 			String s = "";
 			if(this.link != null)
 				s+= this.link.toString();
-			return "Node [key=" + key + "]" + s;
+			return "\t"+ key +  s;
 		}
 		@Override
 		public int hashCode() {
@@ -33,6 +35,31 @@ public class Node {
 			result = prime * result + ((key == null) ? 0 : key.hashCode());
 			result = prime * result + ((link == null) ? 0 : link.hashCode());
 			return result;
+		}
+		
+		public static Node fusion(Node original, Node copy){
+			if(original == null)
+				return copy;
+			else if (copy == null){
+				return original;
+			}else{
+				int prefixe = PatriciaTree.prefixe(original.key, copy.key);
+				if(prefixe == original.key.length() && prefixe == copy.key.length()){
+					if(original.key.endsWith(PatriciaTree.END_CHAR.toString())){  //Même mot final sur le noeud
+						return original;
+					}
+					else{
+						 //Même préfixe, on fusionne les fils.
+					}
+				}else{
+						original.link =	PatriciaTree.addPrefixEachWord(original.link, original.key.substring(prefixe));
+						original.key = original.key.substring(0, prefixe);
+						copy.link = PatriciaTree.addPrefixEachWord(copy.link, copy.key.substring(prefixe));
+						copy.key = copy.key.substring(0, prefixe);
+				}
+				original.link = PatriciaTree.fusion(original.link, copy.link);
+			}
+			return original;
 		}
 		@Override
 		public boolean equals(Object obj) {

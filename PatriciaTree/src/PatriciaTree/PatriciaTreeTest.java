@@ -6,16 +6,20 @@ import org.junit.Test;
 
 public class PatriciaTreeTest {
 	PatriciaTree patricia = new PatriciaTree();
-	public final String FILE = "jUnitTestFile";
+	public final static String FILE = "jUnitTestFile";
 	
 	@Test
 	public final void testPatriciaTree() {
 		assertEquals(patricia.insererMot("ARBRE"), new PatriciaTree("ARBRE"+ PatriciaTree.END_CHAR));
 	}
-
+	
+	@Test
+	public final void testFusion(){
+		assertEquals(PatriciaTree.fusion(PatriciaTree.lectureFichier("FUSIONA"), PatriciaTree.lectureFichier("FUSIONB")), PatriciaTree.lectureFichier("FUSIONALL"));
+	}
 	@Test
 	public final void testIndexGetKey() {
-		assertEquals(PatriciaTree.getIndexKey("a"), 'a'- PatriciaTree.MIN_ASCII);
+		assertEquals(PatriciaTree.getIndexKey("a"), 'a');
 	}
 
 	@Test

@@ -7,15 +7,21 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PatriciaTree implements RTrie{
+public class PatriciaTree implements RTrie, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public static final int ASCII_NUMBER = 128;
-	public static final int MIN_ASCII = 0;
+
 	   private Node frère[];
-	   public static final Character END_CHAR = new Character((char)7);
+	   public static final Character END_CHAR = new Character((char)127);
 
 	   public PatriciaTree(String key){
 		   this.createNode();
@@ -50,7 +56,7 @@ public class PatriciaTree implements RTrie{
 			   e.printStackTrace();
 			   System.err.println(e);
 		   }
-		   return (int)key.charAt(0) - MIN_ASCII;
+		   return (int)key.charAt(0);
 	   }
 	   
 		public static int prefixe(String  mot, String key){
@@ -62,27 +68,6 @@ public class PatriciaTree implements RTrie{
 			 return motLght;
 		}
 		
-/*
-		
-		void split(int indexDivide) // dividing this node according to indexDivide key symbol
-		{   
-			PatriciaTree p = new PatriciaTree(this.key.substring(indexDivide)); 
-			p.link = this.link;   
-			this.link = p;
-			this.key = this.key.substring(0, indexDivide);
-		}
-		
-
-		
-
-		  public void join() // t and t->link nodes merge
-		  {
-		    	PatriciaTree p = this.link;
-		    	String mot_fusionne = new String(this.key + p.key );
-		    	this.key = mot_fusionne;
-		    	this.link = p.link;
-		  }
-		*/
 		@Override
 		public RTrie suppression(String mot){
 			this.remove(this, mot + END_CHAR);
@@ -209,38 +194,6 @@ public class PatriciaTree implements RTrie{
 			return liste;
 		}
 		
-/*
-		
-		public int prefixe(String mot){
-			int longueurMot = mot.length();
-			int prefixe_max = prefix(mot, this.key);
-			if(prefixe_max == 0){
-				if(this.next!= null)
-					return this.next.prefixe(mot);
-				else return 0;
-			}
-			else if(prefixe_max == longueurMot){
-				if(this.key.endsWith(END_CHAR))
-					return 1;
-				return this.link.comptageMots();
-			}
-			else
-				return this.link.prefixe(mot.substring(prefixe_max));
-		}
-		
-		public int hauteur(){
-			int taille_max = 0;
-			PatriciaTree t = this.next;
-			if(this.estVide())
-				return 0;
-			else{
-				while( t!= null){
-					taille_max = Math.max(taille_max, t.hauteur());
-					t = t.next;
-				}
-				return 1 + taille_max;
-			}
-		}*/
 		public PatriciaTree fils(int index){
 			return this.frère[index].getLink();
 		}
@@ -253,7 +206,7 @@ public class PatriciaTree implements RTrie{
 			this.frère[index] = node;
 		}
 		
-		public boolean insert(PatriciaTree t, String mot){
+		private boolean insert(PatriciaTree t, String mot){
 			if(t == null){
 				t = new PatriciaTree(mot);
 			}
@@ -377,6 +330,33 @@ public class PatriciaTree implements RTrie{
 			// TODO Auto-generated method stub
 			return 0;
 		}
+
+	/*	public static PatriciaTree fusion(PatriciaTree t, PatriciaTree copy){
+			return t.fusion(copy);
+		}*/
+		
+		public  static PatriciaTree addPrefixEachWord(PatriciaTree t, String prefixe){
+			if(t == null || t.isEmpty())
+				return new PatriciaTree(prefixe);
+			for(Node n:t.frère){
+				if(n!=null)
+					n.setKey(prefixe + n.getKey());
+			}
+			return t;
+		}
+		public static PatriciaTree fusion(PatriciaTree t, PatriciaTree copy) {
+			if(t == null || t.isEmpty()){
+				return copy;
+			}else if(copy == null || copy.isEmpty()){
+				return t;
+			}
+			for(int i = 0; i < PatriciaTree.ASCII_NUMBER; i++){
+				t.setNode(i, Node.fusion(t.frère[i], copy.frère[i]));
+			}
+			return t;
+		}
+		
+
 
 
 		@Override
