@@ -17,8 +17,6 @@ public class Node {
 		}
 		public Node(String mot) {
 			this.link = null;
-			if(!mot.endsWith(PatriciaTree.END_CHAR.toString()))
-				mot+=PatriciaTree.END_CHAR;
 			this.key = mot;
 		}
 		@Override

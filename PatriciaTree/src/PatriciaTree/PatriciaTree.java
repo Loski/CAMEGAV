@@ -21,7 +21,7 @@ public class PatriciaTree implements RTrie, Serializable{
 	public static final int ASCII_NUMBER = 128;
 
 	   private Node frère[];
-	   public static final Character END_CHAR = new Character((char)127);
+	   public static final Character END_CHAR = new Character((char)38);
 
 	   public PatriciaTree(String key){
 		   this.createNode();
@@ -146,16 +146,31 @@ public class PatriciaTree implements RTrie, Serializable{
 				{
 				    PrintWriter pw = new PrintWriter (new BufferedWriter (new FileWriter (f)));
 				    pw.println("<!doctype html>"
-				    +"<html lang='fr'> "
-				    +"<head> "
-				      +"<meta charset='utf-8'>"
-				      +"<title>Titre de la page</title>"
-				      +"<link rel='stylesheet' href='style.css'>"
-				    +"</head>"
-				    +"<body>"+
-				    "<div class='tree'><ul>");
+						    +"<html lang='fr'> "
+						    +"<head>"+"<title>"+this.getClass()+"</title>"
+						    +"<meta charset='utf-8'>"
+						    
+						    +"<link rel='stylesheet' href='jquery.orgchart.css'/>"
+						    +"<link rel='stylesheet' href='style.css'/>"
+						    +"<script src='jquery.min.js'></script>"
+						    +"<script src='jquery.orgchart.js'></script>"
+						  +  "<script>"+
+						    "$(function() {"+
+						        "$('#tree').orgChart({container: $('#main'), interactive: true, fade: true, speed: 'fast'});"+
+						    "});"+
+						    "</script>"+
+						"</head>"
+						    +"<body>"+
+						    "\n\n<ul id='tree'><li><ul>");
 				    pw.println(parcourirArbre());
-				    pw.println("</ul></div></body></html>");
+				    pw.println("</ul></li></ul><div id='main'></div>"
+				    +"<script>$(function() {"
+				    +"$('#organisation').orgChart({container: $('#main'), interactive: true, fade: true, speed: 'slow'});"
+					+"});"
+					+"$(function() {"
+			        +"$('#tree').remove()"
+			        +"});"
+					+ "</script></body></html>");
 				    pw.close();
 				    System.out.println("End generation " + name);
 				}
@@ -171,12 +186,13 @@ public class PatriciaTree implements RTrie, Serializable{
 				for(Node n: this.frère){
 					if(n == null)
 						continue;
-					str+="<li><a href='#'>" + n.getKey() +"</a>";
+					str+="\n<li>" + n.getKey();
 					if(n.getLink() != null){
-						str += "<ul>" + n.getLink().parcourirArbre()+ "</ul>";
+						str += "\n\t<ul>" + n.getLink().parcourirArbre()+ "</ul>";
 					}
+					str+="</li>";
 				}
-				return str + "</li>";
+				return str;
 			}
 	
 			@Override
@@ -334,15 +350,22 @@ public class PatriciaTree implements RTrie, Serializable{
 	/*	public static PatriciaTree fusion(PatriciaTree t, PatriciaTree copy){
 			return t.fusion(copy);
 		}*/
-		
+		/*
+		 * Ajoute un arbre entre 2 parties de mots
+		 */
 		public  static PatriciaTree addPrefixEachWord(PatriciaTree t, String prefixe){
+			PatriciaTree tmp;
+			if(prefixe.isEmpty())
+				return t;
 			if(t == null || t.isEmpty())
 				return new PatriciaTree(prefixe);
-			for(Node n:t.frère){
-				if(n!=null)
-					n.setKey(prefixe + n.getKey());
+			else{
+				tmp = new PatriciaTree();
+				int index = PatriciaTree.getIndexKey(prefixe);
+				tmp.frère[index] = new Node(prefixe);
+				tmp.frère[index].setLink(t);
 			}
-			return t;
+			return tmp;
 		}
 		public static PatriciaTree fusion(PatriciaTree t, PatriciaTree copy) {
 			if(t == null || t.isEmpty()){

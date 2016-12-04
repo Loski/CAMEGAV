@@ -10,6 +10,7 @@ public class PatriciaTest {
 		p.suppression("Vampirer");
 		p.printHTML("Arbre");
 		PatriciaTree.fusion(PatriciaTree.lectureFichier("FUSIONA"), PatriciaTree.lectureFichier("FUSIONB")).printHTML("FUSION");
+		PatriciaTree.lectureFichier("FUSIONALL").printHTML("NOFUSION");
 		/*PatriciaTree f = PatriciaTree.lectureFichier("jUnitTestFile"); 
 		f.printHTML("arbre");
 		System.out.println(f.listeMots(""));
