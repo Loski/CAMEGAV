@@ -1,0 +1,54 @@
+*
+{
+	padding :0 0 0 0!important;
+	margin :0;
+}
+
+div.orgChart
+{
+	border:none;
+	background:none;
+}
+
+h2{
+	font-style: none;
+	color:black;
+	text-decoration:none;
+	font-size:1.5em;
+	cursor:default;
+	line-height:1.5em;
+	font-family: arial, verdana, tahoma;
+	cursor:pointer;
+}
+
+div.orgChart div.node
+{
+	background:none;
+	width:5em;
+	height:3em;
+	cursor:pointer;
+}
+
+.wordEnd, .wordEnd h2
+{
+	cursor:pointer;
+	background:green!important;
+}
+
+.wordEnd:hover, .wordEnd:hover h2
+{
+	background:red!important;
+}
+
+div.orgChart div.node:hover
+{
+	 -o-box-shadow: 2px 2px 19px #FFCC00;
+                -webkit-box-shadow: 2px 2px 19px #FFCC00;
+                -moz-box-shadow: 2px 2px 19px #FFCC00;
+}
+
+/*
+table { 
+	table-layout:fixed; 
+	width:300px;
+}*/
