@@ -384,8 +384,25 @@ public class PatriciaTrie implements RTrie, Serializable{
 
 		@Override
 		public int prefixe(String mot) {
-			// TODO Auto-generated method stub
-			return 0;
+			int compteur = 0;
+			int index = PatriciaTrie.getIndexKey(mot);
+			Node node  = this.frère[index];
+			String motCle = node.getKey();
+			int taille_prefixe = prefixe(mot, motCle);
+			if(taille_prefixe == mot.length()){
+				if(node.getLink() != null){
+					String mot_buffer = mot.substring(taille_prefixe);
+					if(mot_buffer.equals(""))
+						return node.getLink().comptageMots();
+					else
+						return node.getLink().prefixe(mot_buffer);
+				}
+				else
+					return 1;
+			}else if(mot.length() > motCle.length()){
+				return 0;
+			}
+			return compteur;
 		}
 
 
