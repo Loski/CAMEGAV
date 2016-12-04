@@ -1,4 +1,4 @@
-package PatriciaTree;
+package trie;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

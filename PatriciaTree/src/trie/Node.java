@@ -1,4 +1,4 @@
-package PatriciaTree;
+package trie;
 
 public class Node {
 		private String key;

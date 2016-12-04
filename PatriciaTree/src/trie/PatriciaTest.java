@@ -1,4 +1,4 @@
-package PatriciaTree;
+package trie;
 
 public class PatriciaTest {
 	public final static  String FILE = "jUnitTestFile";

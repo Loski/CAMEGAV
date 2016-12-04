@@ -1,4 +1,4 @@
-package PatriciaTree;
+package trie;
 
 import static org.junit.Assert.*;
 
