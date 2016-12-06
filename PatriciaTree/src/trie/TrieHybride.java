@@ -541,4 +541,12 @@ public class TrieHybride implements RTrie{
 			return t;
 	}
 
+	@Override
+	public void insertionListeMot(ArrayList<String> str) {
+		for(String s : str){
+			this.insererMot(s);
+		}
+		
+	}
+
 }

@@ -1,5 +1,8 @@
 package trie;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 public class Interface {
 	
@@ -12,10 +15,11 @@ public class Interface {
 	public static final int LISTE_MOT = 4;
 	public static final int COMPTAGE_MOT = 5;
 	public static final int COMPTAGE_NIL = 6;
-	public static final int HAUTEUR = 7;
-	public static final int PROFONDEUR_MOYENNE = 8;
-	public static final int CONVERSION = 9;
-	public static final int FUSION = 10;
+	public static final int PREFIXE = 7;
+	public static final int HAUTEUR = 8;
+	public static final int PROFONDEUR_MOYENNE = 9;
+	public static final int CONVERSION = 11;
+	public static final int FUSION = 11;
 	
 	public static final int PATRICIA_TRIE = 1;
 	public static final int TRIE_HYBRIDE = 2;
@@ -48,8 +52,9 @@ public class Interface {
 		System.out.println(SUPPRESSION+ ". Suppression d'un mot.");
 		System.out.println(RECHERCHE+ ". Recherche d'un mot.");
 		System.out.println(LISTE_MOT + ". ListeMot");
-		System.out.println(COMPTAGE_MOT + ". Comptage des mots");
-		System.out.println(COMPTAGE_NIL + ". Comptage Nil");
+		System.out.println(COMPTAGE_MOT + ". Comptage des mots.");
+		System.out.println(COMPTAGE_NIL + ". Comptage Nil.");
+		System.out.println(PREFIXE + ". Nombre de mot préfixe.");
 		System.out.println(HAUTEUR + ". Hauteur de l'arbre.");
 		System.out.println(PROFONDEUR_MOYENNE + ". Profondeur moyenne de l'arbre.");
 		String str = CONVERSION + ". Conversion en ";
@@ -61,7 +66,9 @@ public class Interface {
 	public void action(int commande){
 		switch (commande) {
 		case CHARGEMENT:
-			
+			System.out.println("Saisir votre fichier : ");
+			this.trie.insertionListeMot(Interface.lectureFichier(saisirMot()));
+			break;
 		case INSERTION:
 			trie.insererMot(saisirMot());
 			break;
@@ -85,6 +92,9 @@ public class Interface {
 		case COMPTAGE_NIL:
 			System.out.println("L'arbre possede " + trie.comptageNil() + "mots.");
 			break;
+		case PREFIXE:
+			String mot = saisirMot();
+			System.out.println("L'arbre possède " + trie.prefixe(mot) + "commençant par " + mot);
 		case HAUTEUR:
 			System.out.println("L'arbre a une hauteur de " + trie.hauteur()+"." );
 			break;
@@ -98,8 +108,10 @@ public class Interface {
 					((PatriciaTrie) this.trie).fusion(t, copy);
 			}
 		default:
+			System.out.println("Action incorrecte !");
 			break;
 		}
+		System.out.println("End of the command");
 	}
 	
 	public String saisirMot(){
@@ -109,6 +121,49 @@ public class Interface {
 	
 	public String saisirString(){
 		String str = sc.nextLine();
-		return str;
+		if(isAllASCII(str))
+			return str;
+		else{
+			System.out.println("Not a ASCII string.\n");
+			return saisirString();
+		}
 	}
+	private static boolean isAllASCII(String input) {
+	    boolean isASCII = true;
+	    for (int i = 0; i < input.length(); i++) {
+	        int c = input.charAt(i);
+	        if (c > 0x7F) {
+	            isASCII = false;
+	            break;
+	        }
+	    }
+	    return isASCII;
+	}
+	
+	public static ArrayList<String> lectureFichier(String name){
+		 	ArrayList<String> str = new  ArrayList<String>(); 
+	        try {
+	            FileReader c = new FileReader(name+".txt");
+	            BufferedReader r = new BufferedReader(c);
+	            String line = r.readLine();
+	            while (line != null) {
+	                String[] decompose = line.split(" ");
+	                for(String s : decompose){
+	                	if(!isAllASCII(s)){
+	                		System.out.println(s + " contains not ASCII caracters, not inserting...");
+	                	}
+	                	else{
+	                		str.add(s);
+	                	}
+	                }
+	           }
+	            
+	            r.close();
+	 
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	            throw new Error(e);
+	        }
+			return str;	
+	  }
 }

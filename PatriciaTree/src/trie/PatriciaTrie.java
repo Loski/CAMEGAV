@@ -387,9 +387,11 @@ public class PatriciaTrie implements RTrie, Serializable{
 			int compteur = 0;
 			int index = PatriciaTrie.getIndexKey(mot);
 			Node node  = this.frère[index];
+			if(node == null)
+				return 0;
 			String motCle = node.getKey();
 			int taille_prefixe = prefixe(mot, motCle);
-			if(taille_prefixe == mot.length()){
+			if(taille_prefixe <= mot.length()){
 				if(node.getLink() != null){
 					String mot_buffer = mot.substring(taille_prefixe);
 					if(mot_buffer.equals(""))
@@ -399,8 +401,6 @@ public class PatriciaTrie implements RTrie, Serializable{
 				}
 				else
 					return 1;
-			}else if(mot.length() > motCle.length()){
-				return 0;
 			}
 			return compteur;
 		}
@@ -441,6 +441,15 @@ public class PatriciaTrie implements RTrie, Serializable{
 
 		public void setFrère(Node[] frère) {
 			this.frère = frère;
+		}
+
+
+
+		@Override
+		public void insertionListeMot(ArrayList<String> str) {
+			for(String s : str){
+				this.insererMot(s);
+			}
 		}
 
 		   

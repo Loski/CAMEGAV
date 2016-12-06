@@ -21,7 +21,15 @@ public class PatriciaTrieTest {
 
 	@Test
 	public final void testPrefixeString() {
-		fail("Not yet implemented"); // TODO
+		patricia1.insererMot("ARBRE");
+		patricia1.insererMot("VOITURE");
+		patricia1.insererMot("VOITURAGE");
+		patricia1.insererMot("VOIE");
+		patricia1.insererMot("VOIX");
+		assertEquals(2, patricia1.prefixe("VOIT"));
+		assertEquals(1, patricia1.prefixe("VOIE"));
+		assertEquals(4, patricia1.prefixe("VOI"));
+		assertEquals(0, patricia1.prefixe("VOILO"));
 	}
 
 	@Test

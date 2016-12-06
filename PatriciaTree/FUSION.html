@@ -1,3 +1,155 @@
-<!doctype html><html lang='fr'> <head> <meta charset='utf-8'><title>Titre de la page</title><link rel='stylesheet' href='style.css'></head><body><div class='tree'><ul>
-<li><a href='#'>(but</a><li><a href='#'>All</a><li><a href='#'>Deletion</a><li><a href='#'>Insertion</a><li><a href='#'>O(k)</a><li><a href='#'>Permanent</a><li><a href='#'>Radix</a><li><a href='#'>Searching</a><li><a href='#'>They</a><li><a href='#'>a</a><ul><li><a href='#'>dds</a><li><a href='#'>l</a><ul><li><a href='#'>l</a><li><a href='#'>so</a></li></ul><li><a href='#'>mount</a><li><a href='#'>nd</a><ul><li><a href='#'>,</a><li><a href='#'></a></li></ul><li><a href='#'>re</a><li><a href='#'></a></li></ul><li><a href='#'>b</a><ul><li><a href='#'>e</a><li><a href='#'>its</a></li></ul><li><a href='#'>d</a><ul><li><a href='#'>ata</a><li><a href='#'>eletion,</a></li></ul><li><a href='#'>e</a><ul><li><a href='#'>qual</a><li><a href='#'>x</a><ul><li><a href='#'>act</a><li><a href='#'>pensive,</a></li></ul></li></ul><li><a href='#'>f</a><ul><li><a href='#'>ind</a><li><a href='#'>ormal.</a><li><a href='#'>rom</a><li><a href='#'>or</a></li></ul><li><a href='#'>have</a><li><a href='#'>i</a><ul><li><a href='#'>n</a><ul><li><a href='#'>clude</a><li><a href='#'>sertion,</a></li></ul><li><a href='#'>s</a></li></ul><li><a href='#'>k</a><li><a href='#'>l</a><ul><li><a href='#'>ength</a><li><a href='#'>imited</a><li><a href='#'>ookup,</a></li></ul><li><a href='#'>m</a><ul><li><a href='#'>aximum</a><li><a href='#'>easured</a><li><a href='#'>inimize</a><li><a href='#'>ore</a><li><a href='#'>uch</a></li></ul><li><a href='#'>n</a><ul><li><a href='#'>e</a><ul><li><a href='#'>cessarily</a><li><a href='#'>w</a></li></ul><li><a href='#'>ot</a></li></ul><li><a href='#'>o</a><ul><li><a href='#'>f</a><li><a href='#'>perations</a><ul><li><a href='#'>.</a><li><a href='#'></a></li></ul><li><a href='#'>wn</a></li></ul><li><a href='#'>pr</a><ul><li><a href='#'>ocedural</a><li><a href='#'>edecessor,</a><li><a href='#'>ocedures,</a><li><a href='#'>efix.</a></li></ul><li><a href='#'>quantity</a><li><a href='#'>r</a><ul><li><a href='#'>adix</a><li><a href='#'>e</a><ul><li><a href='#'>asons,</a><li><a href='#'>moves</a></li></ul><li><a href='#'>ules</a></li></ul><li><a href='#'>s</a><ul><li><a href='#'>e</a><ul><li><a href='#'>arching</a><li><a href='#'>t,</a></li></ul><li><a href='#'>lower.[3]</a><li><a href='#'>t</a><ul><li><a href='#'>ored.</a><li><a href='#'>ring</a><ul><li><a href='#'>s</a><li><a href='#'></a></li></ul></li></ul><li><a href='#'>u</a><ul><li><a href='#'>ccessor,</a><li><a href='#'>pport</a></li></ul></li></ul><li><a href='#'>t</a><ul><li><a href='#'>end</a><li><a href='#'>he</a><ul><li><a href='#'>ir</a><li><a href='#'>se</a><li><a href='#'></a></li></ul><li><a href='#'>o</a><ul><li><a href='#'>)</a><li><a href='#'></a></li></ul><li><a href='#'>r</a><ul><li><a href='#'>ees</a><li><a href='#'>i</a><ul><li><a href='#'>e.</a><li><a href='#'>bunals</a><li><a href='#'>e</a></li></ul><li><a href='#'>ying</a></li></ul></li></ul><li><a href='#'>w</a><ul><li><a href='#'>h</a><ul><li><a href='#'>ere</a><li><a href='#'>ile</a></li></ul><li><a href='#'>ith</a></li></ul></li>
-</ul></div></body></html>
+<!doctype html><html lang='fr'> <head><title>class PatriciaTree.PatriciaTrie</title><meta charset='utf-8'><link rel='stylesheet' href='jquery.orgchart.css'/><link rel='stylesheet' href='style.css'/><script src='jquery.min.js'></script><script src='jquery.orgchart.js'></script><script>$(function() {$('#tree').orgChart({container: $('#main'), interactive: true, fade: true, speed: 'fast'});});</script></head><body>
+
+<ul id='tree'><li><ul>
+
+<li>(but&</li>
+<li>All&</li>
+<li>Deletion&</li>
+<li>Insertion&</li>
+<li>O(k)&</li>
+<li>Permanent&</li>
+<li>Radix&</li>
+<li>Searching&</li>
+<li>They&</li>
+<li>a
+	<ul>
+<li>&</li>
+<li>dds&</li>
+<li>l
+	<ul>
+<li>l&</li>
+<li>so&</li></ul></li>
+<li>mount&</li>
+<li>nd
+	<ul>
+<li>&</li>
+<li>,&</li></ul></li>
+<li>re&</li></ul></li>
+<li>b
+	<ul>
+<li>e&</li>
+<li>its&</li></ul></li>
+<li>d
+	<ul>
+<li>ata&</li>
+<li>eletion,&</li></ul></li>
+<li>e
+	<ul>
+<li>qual&</li>
+<li>x
+	<ul>
+<li>act&</li>
+<li>pensive,&</li></ul></li></ul></li>
+<li>f
+	<ul>
+<li>ind&</li>
+<li>or
+	<ul>
+<li>&</li>
+<li>mal.&</li></ul></li>
+<li>rom&</li></ul></li>
+<li>have&</li>
+<li>i
+	<ul>
+<li>n
+	<ul>
+<li>&</li>
+<li>clude&</li>
+<li>sertion,&</li></ul></li>
+<li>s&</li></ul></li>
+<li>k&</li>
+<li>l
+	<ul>
+<li>ength&</li>
+<li>imited&</li>
+<li>ookup,&</li></ul></li>
+<li>m
+	<ul>
+<li>aximum&</li>
+<li>easured&</li>
+<li>inimize&</li>
+<li>ore&</li>
+<li>uch&</li></ul></li>
+<li>n
+	<ul>
+<li>e
+	<ul>
+<li>cessarily&</li>
+<li>w&</li></ul></li>
+<li>ot&</li></ul></li>
+<li>o
+	<ul>
+<li>f&</li>
+<li>perations
+	<ul>
+<li>&</li>
+<li>.&</li></ul></li>
+<li>wn&</li></ul></li>
+<li>pr
+	<ul>
+<li>e
+	<ul>
+<li>decessor,&</li>
+<li>fix.&</li></ul></li>
+<li>ocedur
+	<ul>
+<li>al&</li>
+<li>es,&</li></ul></li></ul></li>
+<li>quantity&</li>
+<li>r
+	<ul>
+<li>adix&</li>
+<li>e
+	<ul>
+<li>asons,&</li>
+<li>moves&</li></ul></li>
+<li>ules&</li></ul></li>
+<li>s
+	<ul>
+<li>e
+	<ul>
+<li>arching&</li>
+<li>t,&</li></ul></li>
+<li>lower.[3]&</li>
+<li>t
+	<ul>
+<li>ored.&</li>
+<li>ring
+	<ul>
+<li>&</li>
+<li>s&</li></ul></li></ul></li>
+<li>u
+	<ul>
+<li>ccessor,&</li>
+<li>pport&</li></ul></li></ul></li>
+<li>t
+	<ul>
+<li>end&</li>
+<li>he
+	<ul>
+<li>&</li>
+<li>ir&</li>
+<li>se&</li></ul></li>
+<li>o
+	<ul>
+<li>&</li>
+<li>)&</li></ul></li>
+<li>r
+	<ul>
+<li>ees&</li>
+<li>i
+	<ul>
+<li>bunals&</li>
+<li>e
+	<ul>
+<li>&</li>
+<li>.&</li></ul></li></ul></li>
+<li>ying&</li></ul></li></ul></li>
+<li>w
+	<ul>
+<li>h
+	<ul>
+<li>ere&</li>
+<li>ile&</li></ul></li>
+<li>ith&</li></ul></li>
+</ul></li></ul><div id='main'></div><script>$(function() {$('#organisation').orgChart({container: $('#main'), interactive: true, fade: true, speed: 'slow'});});$(function() {$('#tree').remove()});</script></body></html>

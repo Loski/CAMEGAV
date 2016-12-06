@@ -1,5 +1,6 @@
 package trie;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public interface RTrie {
 	public void suppression(String mot);
 		
 	public boolean estVide();
+	
+	public void insertionListeMot(ArrayList<String> str);
 	
 //	public void affichage(); ?
 
