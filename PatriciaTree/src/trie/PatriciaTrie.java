@@ -333,7 +333,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 		}
 
 		@Override
-		public double profondeurMoyenne() {
+		public int profondeurMoyenne() {
 			// TODO Auto-generated method stub
 			return 0;
 		}
