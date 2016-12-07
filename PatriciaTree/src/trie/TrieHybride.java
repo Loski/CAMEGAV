@@ -837,4 +837,17 @@ public class TrieHybride implements RTrie{
 	public void suppression(String mot) {
 		//TrieHybride.suppression(this, mot);
 	}
+
+
+	@Override
+	public RTrie conversion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void printHTML(String name) {
+		// TODO Auto-generated method stub
+		
+	}
 }

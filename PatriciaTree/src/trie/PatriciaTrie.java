@@ -27,8 +27,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 		   this.createNode();
 		   this.frère[getIndexKey(key)] = new Node(key);
 	   }
-	   
-
+	  
 	   
 	   @Override
 	public String toString() {
