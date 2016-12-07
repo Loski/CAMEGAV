@@ -47,6 +47,11 @@ div.orgChart div.node:hover
                 -moz-box-shadow: 2px 2px 19px #FFCC00;
 }
 
+div.node.highlight, div.node.highlight h2
+{
+	background:red!important;
+}
+
 /*
 table { 
 	table-layout:fixed; 
