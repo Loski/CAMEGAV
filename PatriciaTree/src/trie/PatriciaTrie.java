@@ -451,6 +451,9 @@ public class PatriciaTrie implements RTrie, Serializable{
 				this.insererMot(s);
 			}
 		}
+		
+		public RTrie conversion(){
+		}
 
 		   
 }
