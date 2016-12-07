@@ -76,6 +76,8 @@ public class TrieHybride implements RTrie{
 			if(i==3)
 				return this.sup;
 		}
+
+		return null;
 	}
 
 	public TrieHybride filsSauf(int i) {
@@ -315,6 +317,33 @@ public class TrieHybride implements RTrie{
 		return nbTotal;
 		
 	}
+
+	private int comptageMotSansSousChaine()
+	{		
+		int nbTotal = 0;
+		
+		int nbMotBrancheInf = 0;
+		int nbMotBrancheEq = 0;
+		int nbMotBrancheSup = 0;
+		
+		if(this.isFinDeMot && this.eq==null)
+		{
+			nbTotal=1;
+		}
+		
+		if(this.inf!=null)
+			nbMotBrancheInf += this.inf.comptageMotSansSousChaine();
+		
+		if(this.eq!=null)
+			nbMotBrancheEq += this.eq.comptageMotSansSousChaine();
+		
+		if(this.sup!=null)
+			nbMotBrancheSup += this.sup.comptageMotSansSousChaine();
+		
+		nbTotal += nbMotBrancheInf + nbMotBrancheEq + nbMotBrancheSup;
+		
+		return nbTotal;	
+	}
 	
 	private List<String> listeMots(String prefixe,ArrayList<String> liste)
 	{
@@ -399,9 +428,32 @@ public class TrieHybride implements RTrie{
 		return 1+maxOfNumbers(hauteurInf,hauteurEq,hauteurSup);
 	}
 	
-	public double profondeurMoyenne()
+	private void profondeurListe(ArrayList<Integer> liste,int profondeur)
+	{		
+		if(this.isFinDeMot && this.eq==null)
+		{
+			liste.add(profondeur);
+		}
+		
+		if(this.inf!=null)
+			this.inf.profondeurListe(liste,profondeur+1);
+		
+		if(this.eq!=null)
+			this.eq.profondeurListe(liste,profondeur+1);
+		
+		if(this.sup!=null)
+			this.sup.profondeurListe(liste,profondeur+1);
+	}
+	
+	public int profondeurMoyenne()
 	{
-		return 0;
+		ArrayList<Integer> listeProfondeur = new ArrayList<>();
+		this.profondeurListe(listeProfondeur,1);
+		int profondeurTotale = 0;
+		for(Integer i : listeProfondeur)
+			profondeurTotale+=i.intValue();
+		
+		return (int) Math.ceil(profondeurTotale/(double)this.comptageMotSansSousChaine());
 	}
 	
 	private int getNbSousNoeud(TrieHybride trie)
@@ -460,40 +512,129 @@ public class TrieHybride implements RTrie{
 		return 0;
 	}
 	
-	public void suppression(String mot)
+	public static TrieHybride suppression(TrieHybride trie,String mot)
 	{
-		LinkedList<TrieHybride> l = new LinkedList<TrieHybride>();
-		boolean existe = delete(mot, 0, this, l, "");
-		if(existe)
-			suppressionNode(l, mot, mot.length()-1);
-	}
-	public void suppressionNode(LinkedList<TrieHybride> list, String mot, int i){
-		TrieHybride last = list.removeLast();
-		if(last.eq == null && last.inf == null && last.sup == null){
-				TrieHybride father = list.removeLast();
-				if(father.eq == last)
-					father.eq = null;
-				else if(father.sup == last)
-					father.sup = null;
-				else if(father.inf == last)
-					father.inf = null;
-				if(!father.isFinDeMot){
-					if(father.inf == null && father.sup != null && father.eq == null ){
-						if(list.isEmpty())
-							switchNode(father.sup);
-						else
-							list.getLast().eq = father.sup;
-					}else if(father.inf != null && father.sup == null && father.eq ==null){
-						if(list.isEmpty()){
-							father.switchNode(father.inf);
-						}else{
-							list.getLast().eq = father.inf;
-						}
-					}
-					list.add(father);
-					suppressionNode(list, mot, i -1);
-				}
+		if(mot==null || mot.isEmpty())
+			return trie;
+		
+		ArrayList<TrieHybride> nodeOfWord = new ArrayList<>();
+		TrieHybride currentNode = trie;
+		
+		int i = 0;
+		
+		while(currentNode!=null && i<mot.length())
+		{
+			char lettre = mot.charAt(i);
+			
+			nodeOfWord.add(currentNode);
+			
+			if (lettre == currentNode.key) {
+				currentNode=currentNode.eq;	
+				i++;
+			}
+			
+			else if (lettre < currentNode.key)
+			{
+				currentNode = currentNode.inf;
+			}
+			
+			else if (lettre > currentNode.key)
+			{
+				currentNode = currentNode.sup;
+			}
 		}
+		
+		//Si le mot à supprimé est une sous-chaîne
+		if(nodeOfWord.get(nodeOfWord.size()-1).eq!=null)
+		{
+			nodeOfWord.get(nodeOfWord.size()-1).isFinDeMot=false;
+			return trie;
+		}
+		
+		//Si le mot a supprimé est la racine et la racine n'est pas utilisée dans les autres mots
+		if(nodeOfWord.size()==1)
+		{
+			if(nodeOfWord.get(0).inf==null && nodeOfWord.get(0).sup==null)
+				return new TrieHybride();
+			
+			if(nodeOfWord.get(0).inf==null)
+				return nodeOfWord.get(0).sup;
+			
+			if(nodeOfWord.get(0).sup==null)
+				return nodeOfWord.get(0).inf;
+			
+			//Si il y a des mots dans les branches inf et sup
+			TrieHybride t = new TrieHybride();
+			t.key=nodeOfWord.get(0).inf.key;
+			t.isFinDeMot=nodeOfWord.get(0).inf.isFinDeMot;
+			t.eq=nodeOfWord.get(0).inf.eq;
+			t.inf=nodeOfWord.get(0).inf.inf;
+			TrieHybride ite = nodeOfWord.get(0).inf;
+			while(ite.sup!=null)
+				ite=ite.sup;
+			ite.sup=nodeOfWord.get(0).sup;
+			t.sup=ite;
+			return t;
+		}
+		
+		for(i=nodeOfWord.size()-1;i>=1;i--)
+		{
+			currentNode = nodeOfWord.get(i);			
+			
+			if(currentNode.inf==null && currentNode.sup==null)
+			{
+				if(nodeOfWord.get(i-1).inf==currentNode)
+				{
+					nodeOfWord.get(i-1).inf=null;
+					return trie;
+				}
+				
+				if(nodeOfWord.get(i-1).sup==currentNode)
+				{
+					nodeOfWord.get(i-1).sup=null;
+					return trie;
+				}
+				
+				nodeOfWord.get(i-1).eq=null;
+				if(nodeOfWord.get(i-1).isFinDeMot)
+					return trie;
+			}
+			else
+			{
+				if(nodeOfWord.get(i).inf==null)
+				{
+					nodeOfWord.get(i-1).eq = nodeOfWord.get(i).sup;
+					return trie;
+				}
+				if(nodeOfWord.get(i).sup==null)
+				{
+					nodeOfWord.get(i-1).eq = nodeOfWord.get(i).inf;
+					return trie;
+				}
+				
+				//Si il y a des mots dans les branches inf et sup
+				TrieHybride t = new TrieHybride();
+				t.key=nodeOfWord.get(i).inf.key;
+				t.isFinDeMot=nodeOfWord.get(i).inf.isFinDeMot;
+				t.eq=nodeOfWord.get(i).inf.eq;
+				t.inf=nodeOfWord.get(i).inf.inf;
+				TrieHybride ite = nodeOfWord.get(i).inf;
+				while(ite.sup!=null)
+					ite=ite.sup;
+				ite.sup=nodeOfWord.get(i).sup;
+				t.sup=ite;
+				nodeOfWord.get(i-1).eq=t;
+				return trie;
+			}
+		}
+		
+		if(nodeOfWord.get(0).inf==null)
+			return trie.sup;
+		
+		if(nodeOfWord.get(0).sup==null)
+			return trie.inf;
+		
+		return trie;		
 	}
 	
 	public void switchNode(TrieHybride copy){
@@ -502,24 +643,6 @@ public class TrieHybride implements RTrie{
 		this.inf = copy.inf;
 		this.sup = copy.sup;
 		this.eq = copy.eq;
-	}
-	public static boolean delete(String mot, int i, TrieHybride t, LinkedList<TrieHybride> list, String mot_copy){
-		if(mot.equals(mot_copy)){
-			list.getLast().isFinDeMot = false;
-			return true;
-		}
-		if(t != null){
-				list.add(t);
-				char character = mot.charAt(i);
-				if(character < t.key ){
-					return delete(mot, i , t.inf, list, mot_copy);
-				}else if(character > t.key)
-					return delete(mot, i, t.sup, list, mot_copy);
-				else{
-					return delete(mot, i+1, t.eq, list, mot_copy+= t.key);
-				}
-		}
-		return false;
 	}
 	
 	@Override
@@ -710,4 +833,8 @@ public class TrieHybride implements RTrie{
 		return true;
 	}
 
+	@Override
+	public void suppression(String mot) {
+		//TrieHybride.suppression(this, mot);
+	}
 }

@@ -32,7 +32,7 @@ public interface RTrie {
 	
 	public int hauteur();
 	
-	public double profondeurMoyenne();
+	public int profondeurMoyenne();
 	
 	public int prefixe(String mot);
 	
