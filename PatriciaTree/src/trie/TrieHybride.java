@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TrieHybride implements RTrie{
@@ -39,15 +40,42 @@ public class TrieHybride implements RTrie{
 		this.sup = null;
 	}*/
 	
+	public static TrieHybride rotationDroite(TrieHybride x){
+		TrieHybride y = new TrieHybride(x.sup);
+		x.sup = y.inf;
+		x.inf = x;
+		return y;
+	}
+	
+	/**
+	 * 
+	 */
+	
+	public static TrieHybride rotationGauche(TrieHybride x){
+		TrieHybride y = new TrieHybride(x.inf);
+		x.inf = y.sup;
+		y.sup = x;
+		return y;
+	}
+
 	public TrieHybride(TrieHybride trie) {
 		this.key = trie.key;
 		this.isFinDeMot = trie.isFinDeMot;
-		this.inf = new TrieHybride(trie.inf);
-		this.eq = new TrieHybride(trie.eq);
-		this.sup = new TrieHybride(trie.sup);
+		if(trie.inf == null)
+			this.inf = trie.inf;
+		else
+			trie.inf = new TrieHybride(trie.inf);
+		if(trie.eq == null)
+			this.eq = trie.eq;
+		else
+			this.eq = new TrieHybride(trie.eq);
+		if(trie.sup == null)
+			this.sup = trie.sup;
+		else {
+			this.sup = new TrieHybride(trie.sup);
+		}
 		this.ordreInsert=trie.ordreInsert;
 	}
-
 	public boolean estVide() {
 		if(this.key==Character.MAX_VALUE && this.inf==null && this.eq==null && this.sup==null)
 			return true;
@@ -395,14 +423,64 @@ public class TrieHybride implements RTrie{
 	
 	public void suppression(String mot)
 	{
-		if(mot==null || mot.isEmpty())
-			return;
-		
-		if (mot.charAt(0) == this.key && mot.length() == 1) 
-		{
-			this.key=Character.MAX_VALUE;
+		LinkedList<TrieHybride> l = new LinkedList<TrieHybride>();
+		boolean existe = delete(mot, 0, this, l, "");
+		if(existe)
+			suppressionNode(l, mot, mot.length()-1);
+	}
+	public void suppressionNode(LinkedList<TrieHybride> list, String mot, int i){
+		TrieHybride last = list.removeLast();
+		if(last.eq == null && last.inf == null && last.sup == null){
+				TrieHybride father = list.removeLast();
+				if(father.eq == last)
+					father.eq = null;
+				else if(father.sup == last)
+					father.sup = null;
+				else if(father.inf == last)
+					father.inf = null;
+				if(!father.isFinDeMot){
+					if(father.inf == null && father.sup != null && father.eq == null ){
+						if(list.isEmpty())
+							switchNode(father.sup);
+						else
+							list.getLast().eq = father.sup;
+					}else if(father.inf != null && father.sup == null && father.eq ==null){
+						if(list.isEmpty()){
+							father.switchNode(father.inf);
+						}else{
+							list.getLast().eq = father.inf;
+						}
+					}
+					list.add(father);
+					suppressionNode(list, mot, i -1);
+				}
 		}
-		
+	}
+	
+	public void switchNode(TrieHybride copy){
+		this.key = copy.key;
+		this.isFinDeMot = copy.isFinDeMot;
+		this.inf = copy.inf;
+		this.sup = copy.sup;
+		this.eq = copy.eq;
+	}
+	public static boolean delete(String mot, int i, TrieHybride t, LinkedList<TrieHybride> list, String mot_copy){
+		if(mot.equals(mot_copy)){
+			list.getLast().isFinDeMot = false;
+			return true;
+		}
+		if(t != null){
+				list.add(t);
+				char character = mot.charAt(i);
+				if(character < t.key ){
+					return delete(mot, i , t.inf, list, mot_copy);
+				}else if(character > t.key)
+					return delete(mot, i, t.sup, list, mot_copy);
+				else{
+					return delete(mot, i+1, t.eq, list, mot_copy+= t.key);
+				}
+		}
+		return false;
 	}
 	
 	@Override

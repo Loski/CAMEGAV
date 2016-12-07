@@ -18,7 +18,7 @@ public class Interface {
 	public static final int PREFIXE = 7;
 	public static final int HAUTEUR = 8;
 	public static final int PROFONDEUR_MOYENNE = 9;
-	public static final int CONVERSION = 11;
+	public static final int CONVERSION = 10;
 	public static final int FUSION = 11;
 	
 	public static final int PATRICIA_TRIE = 1;
