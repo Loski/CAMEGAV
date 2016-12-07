@@ -95,7 +95,12 @@ public class TrieHybride implements RTrie{
 			return null;
 		else
 		{
-			return new TrieHybride();
+			if(i==1)
+				return this.inf;
+			if(i==2)
+				return this.eq;
+			if(i==3)
+				return this.sup;
 		}
 	}
 
@@ -108,7 +113,20 @@ public class TrieHybride implements RTrie{
 			return null;
 		else
 		{
-			return new TrieHybride();
+			TrieHybride t = new TrieHybride();
+			t.key=this.key;
+			t.inf=this.inf;
+			t.eq=this.eq;
+			t.sup=this.sup;
+
+			if(i==1)
+				t.inf=null;
+			if(i==2)
+				t.eq=null;
+			if(i==3)
+				t.eq=null;
+
+			return t;
 		}
 	}
 	
@@ -409,6 +427,9 @@ public class TrieHybride implements RTrie{
 				startNode = startNode.sup;
 			}		
 		}
+		
+		if(startNode==null)
+			return 0;
 		
 		int nbMot = 0;
 		
