@@ -14,7 +14,7 @@ import java.util.List;
 public class TrieHybride implements RTrie{
 	
 	private int ordreInsert;
-	private int lastInsert;
+	private static int lastInsert;
 	
 	private char key;
 	private boolean isFinDeMot;
@@ -30,56 +30,30 @@ public class TrieHybride implements RTrie{
 		this.eq = null;
 		this.sup = null;
 		this.ordreInsert=0;
+		this.lastInsert = 0;
 	}
 	
-	/*public TrieHybride(char key) {
+	public TrieHybride(char key) {
 		this.key = key;
 		this.isFinDeMot = false;
 		this.inf = null;
 		this.eq = null;
 		this.sup = null;
-	}*/
-	
-	public static TrieHybride rotationDroite(TrieHybride x){
-		TrieHybride y = new TrieHybride(x.sup);
-		x.sup = y.inf;
-		x.inf = x;
-		return y;
 	}
 	
-	/**
-	 * 
-	 */
-	
-	public static TrieHybride rotationGauche(TrieHybride x){
-		TrieHybride y = new TrieHybride(x.inf);
-		x.inf = y.sup;
-		y.sup = x;
-		return y;
-	}
+
 
 	public TrieHybride(TrieHybride trie) {
 		this.key = trie.key;
 		this.isFinDeMot = trie.isFinDeMot;
-		if(trie.inf == null)
-			this.inf = trie.inf;
-		else
-			trie.inf = new TrieHybride(trie.inf);
-		if(trie.eq == null)
-			this.eq = trie.eq;
-		else
-			this.eq = new TrieHybride(trie.eq);
-		if(trie.sup == null)
-			this.sup = trie.sup;
-		else {
-			this.sup = new TrieHybride(trie.sup);
-		}
+		this.inf = trie.inf;
+		this.sup = trie.sup;
+		this.eq= trie.eq;
 		this.ordreInsert=trie.ordreInsert;
 	}
 	public boolean estVide() {
 		if(this.key==Character.MAX_VALUE && this.inf==null && this.eq==null && this.sup==null)
 			return true;
-		
 		return false;
 	}
 
@@ -162,27 +136,71 @@ public class TrieHybride implements RTrie{
 	}
 	
 	public void insererMot(String mot) {
-		
-		if (mot != null && !mot.isEmpty()) {
-			
-			TrieHybride nvBranche = this.ajouterCaractere(mot.charAt(0));
-
-			TrieHybride lastNode = nvBranche;
-			
-			for (int i = 1; i < mot.length(); i++) {
-			
-				if (lastNode.eq == null)
-					lastNode.eq = new TrieHybride();
-				
-				lastNode = lastNode.eq.ajouterCaractere(mot.charAt(i));
-			}
-
-			this.lastInsert++;
-			lastNode.ordreInsert+=this.lastInsert;
-			lastNode.isFinDeMot = true; 
+		if(this.key == Character.MAX_VALUE)
+			this.key = mot.charAt(0);
+		insert(mot, 0, this);
+	}
+	private static void equilibrage(TrieHybride t){
+		int max_inf = (t.inf == null) ? 0 : t.inf.comptageMots();
+		int max_sup = (t.sup == null) ? 0 : t.sup.comptageMots();
+		if(max_inf *2 < max_sup){
+			t.rotationGauche();
 		}
+		else if(max_inf > max_sup *2){
+			t.rotationDroite();
+		}
+		//return t;
+		
+	}
+	private void rotationDroite(){
+		  TrieHybride aux = (this.inf==null) ? null : new TrieHybride(this.inf);
+		  this.inf = (aux.sup==null) ? null : new TrieHybride(aux.sup);
+		  aux.sup =  new TrieHybride(this);
+		modifThis(aux);
 	}
 	
+	private void rotationGauche(){
+		  TrieHybride aux = (this.sup==null) ? null : new TrieHybride(this.sup);
+		  this.sup = (aux.inf==null) ? null : new TrieHybride(aux.inf);
+		  aux.inf = new TrieHybride(this);
+			modifThis(aux);
+	}
+	private void modifThis(TrieHybride trie) {
+		if(trie==null) return;
+		this.key = trie.key;
+		this.isFinDeMot = trie.isFinDeMot;
+		this.inf = trie.inf;
+		this.eq = trie.eq;
+		this.sup = trie.sup;
+
+}
+	private static TrieHybride insert(String mot, int i, TrieHybride t){
+		System.out.println(i);
+		if(i >= mot.length() )
+			return null;
+		if(t == null){
+			t = new TrieHybride(mot.charAt(i));
+		}
+		if(mot.charAt(i) < t.key){
+			t.inf = insert(mot, i, t.inf);
+		}
+		else if(mot.charAt(i) > t.key){
+			t.sup = insert(mot, i, t.sup);
+
+		}
+		else{
+			TrieHybride tmp =  insert(mot, i +1, t.eq);
+			if(tmp == null){
+				t.isFinDeMot = true;
+				t.ordreInsert = t.lastInsert;
+				t.lastInsert++;
+			}else
+				t.eq = tmp;
+		}
+		if(t!=null)
+			equilibrage(t);
+		return t;
+	}
 	public boolean recherche(String mot) {
 		
 		if (mot == null || mot.isEmpty())
@@ -646,6 +664,50 @@ public class TrieHybride implements RTrie{
 			this.insererMot(s);
 		}
 		
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((eq == null) ? 0 : eq.hashCode());
+		result = prime * result + (isFinDeMot ? 1231 : 1237);
+		result = prime * result + key;
+		result = prime * result + ordreInsert;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TrieHybride other = (TrieHybride) obj;
+		if (eq == null) {
+			if (other.eq != null)
+				return false;
+		} else if (!eq.equals(other.eq))
+			return false;
+		if (inf == null) {
+			if (other.inf != null)
+				return false;
+		} else if (!inf.equals(other.inf))
+			return false;
+		if (isFinDeMot != other.isFinDeMot)
+			return false;
+		if (key != other.key)
+			return false;
+		if (ordreInsert != other.ordreInsert)
+			return false;
+		if (sup == null) {
+			if (other.sup != null)
+				return false;
+		} else if (!sup.equals(other.sup))
+			return false;
+		return true;
 	}
 
 }
