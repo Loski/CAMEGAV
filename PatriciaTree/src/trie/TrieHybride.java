@@ -512,13 +512,14 @@ public class TrieHybride implements RTrie{
 		return 0;
 	}
 	
-	public static TrieHybride suppression(TrieHybride trie,String mot)
+	@Override
+	public void suppression(String mot)
 	{
 		if(mot==null || mot.isEmpty())
-			return trie;
+			return;
 		
 		ArrayList<TrieHybride> nodeOfWord = new ArrayList<>();
-		TrieHybride currentNode = trie;
+		TrieHybride currentNode = this;
 		
 		int i = 0;
 		
@@ -548,20 +549,29 @@ public class TrieHybride implements RTrie{
 		if(nodeOfWord.get(nodeOfWord.size()-1).eq!=null)
 		{
 			nodeOfWord.get(nodeOfWord.size()-1).isFinDeMot=false;
-			return trie;
+			return;
 		}
 		
 		//Si le mot a supprimé est la racine et la racine n'est pas utilisée dans les autres mots
 		if(nodeOfWord.size()==1)
 		{
 			if(nodeOfWord.get(0).inf==null && nodeOfWord.get(0).sup==null)
-				return new TrieHybride();
+			{
+				this.switchNode(new TrieHybride());
+				return;
+			}
 			
 			if(nodeOfWord.get(0).inf==null)
-				return nodeOfWord.get(0).sup;
+			{
+				this.switchNode(nodeOfWord.get(0).sup);
+				return;
+			}
 			
 			if(nodeOfWord.get(0).sup==null)
-				return nodeOfWord.get(0).inf;
+			{
+				this.switchNode(nodeOfWord.get(0).inf);
+				return;
+			}
 			
 			//Si il y a des mots dans les branches inf et sup
 			TrieHybride t = new TrieHybride();
@@ -574,7 +584,8 @@ public class TrieHybride implements RTrie{
 				ite=ite.sup;
 			ite.sup=nodeOfWord.get(0).sup;
 			t.sup=ite;
-			return t;
+			this.switchNode(t);
+			return;
 		}
 		
 		for(i=nodeOfWord.size()-1;i>=1;i--)
@@ -586,30 +597,30 @@ public class TrieHybride implements RTrie{
 				if(nodeOfWord.get(i-1).inf==currentNode)
 				{
 					nodeOfWord.get(i-1).inf=null;
-					return trie;
+					return;
 				}
 				
 				if(nodeOfWord.get(i-1).sup==currentNode)
 				{
 					nodeOfWord.get(i-1).sup=null;
-					return trie;
+					return;
 				}
 				
 				nodeOfWord.get(i-1).eq=null;
 				if(nodeOfWord.get(i-1).isFinDeMot)
-					return trie;
+					return;
 			}
 			else
 			{
 				if(nodeOfWord.get(i).inf==null)
 				{
 					nodeOfWord.get(i-1).eq = nodeOfWord.get(i).sup;
-					return trie;
+					return;
 				}
 				if(nodeOfWord.get(i).sup==null)
 				{
 					nodeOfWord.get(i-1).eq = nodeOfWord.get(i).inf;
-					return trie;
+					return;
 				}
 				
 				//Si il y a des mots dans les branches inf et sup
@@ -624,17 +635,22 @@ public class TrieHybride implements RTrie{
 				ite.sup=nodeOfWord.get(i).sup;
 				t.sup=ite;
 				nodeOfWord.get(i-1).eq=t;
-				return trie;
+				return;
 			}
 		}
 		
 		if(nodeOfWord.get(0).inf==null)
-			return trie.sup;
+		{
+			this.switchNode(this.sup);
+			return;
+		}
 		
 		if(nodeOfWord.get(0).sup==null)
-			return trie.inf;
-		
-		return trie;		
+		{
+			this.switchNode(this.inf);
+			return;
+		}
+				
 	}
 	
 	public void switchNode(TrieHybride copy){
@@ -833,8 +849,4 @@ public class TrieHybride implements RTrie{
 		return true;
 	}
 
-	@Override
-	public void suppression(String mot) {
-		//TrieHybride.suppression(this, mot);
-	}
 }
