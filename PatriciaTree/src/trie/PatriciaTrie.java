@@ -21,7 +21,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 	public static final int ASCII_NUMBER = 128;
 
 	   private Node frère[];
-	   public static final Character END_CHAR = new Character((char)38);
+	   public static final Character END_CHAR = new Character('\0');
 
 	   public PatriciaTrie(String key){
 		   this.createNode();
@@ -453,7 +453,10 @@ public class PatriciaTrie implements RTrie, Serializable{
 		}
 		
 		public RTrie conversion(){
+			return null;
 		}
+
+
 
 		   
 }

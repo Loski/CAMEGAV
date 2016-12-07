@@ -42,6 +42,9 @@ public interface RTrie {
 	
 	public void insertionListeMot(ArrayList<String> str);
 	
-//	public void affichage(); ?
+	
+	public RTrie conversion();
+	
+	public void printHTML(String name);
 
 }
