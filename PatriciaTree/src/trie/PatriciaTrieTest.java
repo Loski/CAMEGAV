@@ -102,7 +102,4 @@ public class PatriciaTrieTest {
 	public final void testIsEmpty() {
 		assertTrue(new PatriciaTrie().estVide());
 	}
-
-
-
 }

@@ -156,6 +156,7 @@ public class Interface {
 	                		str.add(s);
 	                	}
 	                }
+	                line = r.readLine();
 	           }
 	            
 	            r.close();

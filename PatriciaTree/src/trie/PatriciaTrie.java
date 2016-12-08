@@ -195,7 +195,9 @@ public class PatriciaTrie implements RTrie, Serializable{
 		@Override
 		public List<String> listeMots(){
 			ArrayList<String> liste = new ArrayList<String>();
-			return listeMots("", liste);
+			listeMots("", liste);
+			liste.sort(String.CASE_INSENSITIVE_ORDER);
+			return liste;
 		}
 		
 		private List<String> listeMots(String prefixe, ArrayList<String> liste){
@@ -333,9 +335,36 @@ public class PatriciaTrie implements RTrie, Serializable{
 
 		@Override
 		public int profondeurMoyenne() {
-			// TODO Auto-generated method stub
-			return 0;
+			int[] result = profondeurFils(0);
+			if (result[1] == 0)
+				return 0;
+			return result[0]/result[1];
 		}
+
+		protected int[] profondeurFils(int level) {
+			boolean allNull = true;
+			int[] result = {0, 0};
+			int[] tmp;
+			int compteur = 0, compteur_end = 0;
+			for (Node n : this.frère) {
+				if(n != null){
+					compteur_end++;
+					compteur++;
+					if(n.getLink() != null){
+						tmp = n.getLink().profondeurFils(level+1);
+						result[0] += tmp[0];
+						result[1] += tmp[1];
+						compteur_end--;
+					}
+				}
+			}
+			if(compteur_end != 0){
+				int result_end_branch[] = {compteur * level, compteur_end * 1};
+				return result_end_branch;
+			}
+
+			return result;
+	}
 
 	/*	public static PatriciaTree fusion(PatriciaTree t, PatriciaTree copy){
 			return t.fusion(copy);
