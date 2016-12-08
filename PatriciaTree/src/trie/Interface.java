@@ -31,7 +31,7 @@ public class Interface {
 		RTrie arbre;
 		Interface f = new Interface();
 		arbre = f.choisirTypeTrie();
-		
+		f.affichage();
 	}
 	
 	public RTrie choisirTypeTrie(){
@@ -104,9 +104,9 @@ public class Interface {
 		case CONVERSION:
 			break;
 		case FUSION:
-			if (this.trie instanceof PatriciaTrie) {
+			/*if (this.trie instanceof PatriciaTrie) {
 					((PatriciaTrie) this.trie).fusion(t, copy);
-			}
+			}*/
 		default:
 			System.out.println("Action incorrecte !");
 			break;
@@ -156,6 +156,7 @@ public class Interface {
 	                		str.add(s);
 	                	}
 	                }
+	                line = r.readLine();
 	           }
 	            
 	            r.close();

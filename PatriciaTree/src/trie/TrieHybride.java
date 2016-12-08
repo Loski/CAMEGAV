@@ -30,7 +30,7 @@ public class TrieHybride implements RTrie{
 		this.eq = null;
 		this.sup = null;
 		this.ordreInsert=0;
-		this.lastInsert = 0;
+		//this.lastInsert = 0;
 	}
 	
 	public TrieHybride(char key) {
@@ -52,7 +52,7 @@ public class TrieHybride implements RTrie{
 		this.ordreInsert=trie.ordreInsert;
 	}
 	public boolean estVide() {
-		if(this.key==Character.MAX_VALUE && this.inf==null && this.eq==null && this.sup==null)
+		if(this.key==Character.MAX_VALUE && this.inf==null && this.eq==null && this.sup==null && !this.isFinDeMot)
 			return true;
 		return false;
 	}
@@ -76,7 +76,7 @@ public class TrieHybride implements RTrie{
 			if(i==3)
 				return this.sup;
 		}
-
+		
 		return null;
 	}
 
@@ -138,9 +138,31 @@ public class TrieHybride implements RTrie{
 	}
 	
 	public void insererMot(String mot) {
+		
+		if (mot != null && !mot.isEmpty()) {
+			
+			TrieHybride nvBranche = this.ajouterCaractere(mot.charAt(0));
+
+			TrieHybride lastNode = nvBranche;
+			
+			for (int i = 1; i < mot.length(); i++) {
+			
+				if (lastNode.eq == null)
+					lastNode.eq = new TrieHybride();
+				
+				lastNode = lastNode.eq.ajouterCaractere(mot.charAt(i));
+			}
+
+			this.lastInsert++;
+			lastNode.ordreInsert+=this.lastInsert;
+			lastNode.isFinDeMot = true; 
+		}
+		
+		//Pour Equilibrage
+		/*
 		if(this.key == Character.MAX_VALUE)
 			this.key = mot.charAt(0);
-		insert(mot, 0, this);
+		insert(mot, 0, this);*/
 	}
 	private static void equilibrage(TrieHybride t){
 		int max_inf = (t.inf == null) ? 0 : t.inf.comptageMots();
@@ -177,7 +199,7 @@ public class TrieHybride implements RTrie{
 
 }
 	private static TrieHybride insert(String mot, int i, TrieHybride t){
-		System.out.println(i);
+		//System.out.println(i);
 		if(i >= mot.length() )
 			return null;
 		if(t == null){
@@ -196,6 +218,7 @@ public class TrieHybride implements RTrie{
 				t.isFinDeMot = true;
 				t.ordreInsert = t.lastInsert;
 				t.lastInsert++;
+				//System.out.println("ORDRE :"+lastInsert);
 			}else
 				t.eq = tmp;
 		}
@@ -658,6 +681,7 @@ public class TrieHybride implements RTrie{
 		this.inf = copy.inf;
 		this.sup = copy.sup;
 		this.eq = copy.eq;
+		this.ordreInsert=copy.ordreInsert;
 	}
 	
 	@Override
@@ -846,6 +870,13 @@ public class TrieHybride implements RTrie{
 		} else if (!sup.equals(other.sup))
 			return false;
 		return true;
+	}
+	
+	public RTrie conversion(){
+		
+		PatriciaTrie trie = new PatriciaTrie();			
+		
+		return trie;
 	}
 
 }
