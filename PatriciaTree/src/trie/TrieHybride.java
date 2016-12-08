@@ -428,32 +428,31 @@ public class TrieHybride implements RTrie{
 		return 1+maxOfNumbers(hauteurInf,hauteurEq,hauteurSup);
 	}
 	
-	private void profondeurListe(ArrayList<Integer> liste,int profondeur)
+	private void profondeurCalcul(int[] calcul,int profondeur)
 	{		
-		if(this.isFinDeMot && this.eq==null)
+		if(this.inf==null &&this.sup==null && this.eq==null)
 		{
-			liste.add(profondeur);
+			calcul[0]+=profondeur;
+			calcul[1]++;
 		}
 		
 		if(this.inf!=null)
-			this.inf.profondeurListe(liste,profondeur+1);
+			this.inf.profondeurCalcul(calcul,profondeur+1);
 		
 		if(this.eq!=null)
-			this.eq.profondeurListe(liste,profondeur+1);
+			this.eq.profondeurCalcul(calcul,profondeur+1);
 		
 		if(this.sup!=null)
-			this.sup.profondeurListe(liste,profondeur+1);
+			this.sup.profondeurCalcul(calcul,profondeur+1);
 	}
 	
 	public int profondeurMoyenne()
 	{
-		ArrayList<Integer> listeProfondeur = new ArrayList<>();
-		this.profondeurListe(listeProfondeur,1);
-		int profondeurTotale = 0;
-		for(Integer i : listeProfondeur)
-			profondeurTotale+=i.intValue();
-		
-		return (int) Math.ceil(profondeurTotale/(double)this.comptageMotSansSousChaine());
+		int[] calculProfondeur = new int[2];
+		this.profondeurCalcul(calculProfondeur,1);
+		int profondeurTotale = calculProfondeur[0];
+		//return (int) Math.ceil(profondeurTotale/(double)this.comptageMotSansSousChaine());
+		return (int) Math.ceil(profondeurTotale/(double)calculProfondeur[1]);
 	}
 	
 	private int getNbSousNoeud(TrieHybride trie)
