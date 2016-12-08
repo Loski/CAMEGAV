@@ -139,7 +139,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 		 
 		  }
 
-			public void printHTML(String name){
+			public void printHTML(String name,boolean showNullPointer){
 				File f = new File (name+".html");
 				try
 				{

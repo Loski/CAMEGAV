@@ -45,6 +45,6 @@ public interface RTrie {
 	
 	public RTrie conversion();
 	
-	public void printHTML(String name);
+	public void printHTML(String name,boolean showNullPointer);
 
 }
