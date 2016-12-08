@@ -138,7 +138,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 		 
 		  }
 
-			public void printHTML(String name){
+			public void printHTML(String name,boolean showNullPointer){
 				File f = new File (name+".html");
 				try
 				{
@@ -401,10 +401,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 		@Override
 		public boolean estVide() {
 			if(this.frère != null){
-				for(Node n : this.frère){
-					if(n != null && n.getKey() != null)
-						return false;
-				}
+				return false;
 			}
 			return true;
 		}

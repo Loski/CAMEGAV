@@ -30,7 +30,7 @@ public class TrieHybride implements RTrie{
 		this.eq = null;
 		this.sup = null;
 		this.ordreInsert=0;
-		this.lastInsert = 0;
+		//this.lastInsert = 0;
 	}
 	
 	public TrieHybride(char key) {
@@ -52,7 +52,7 @@ public class TrieHybride implements RTrie{
 		this.ordreInsert=trie.ordreInsert;
 	}
 	public boolean estVide() {
-		if(this.key==Character.MAX_VALUE && this.inf==null && this.eq==null && this.sup==null)
+		if(this.key==Character.MAX_VALUE && this.inf==null && this.eq==null && this.sup==null && !this.isFinDeMot)
 			return true;
 		return false;
 	}
@@ -76,7 +76,7 @@ public class TrieHybride implements RTrie{
 			if(i==3)
 				return this.sup;
 		}
-
+		
 		return null;
 	}
 
@@ -138,11 +138,33 @@ public class TrieHybride implements RTrie{
 	}
 	
 	public void insererMot(String mot) {
+		
+		/*if (mot != null && !mot.isEmpty()) {
+			
+			TrieHybride nvBranche = this.ajouterCaractere(mot.charAt(0));
+
+			TrieHybride lastNode = nvBranche;
+			
+			for (int i = 1; i < mot.length(); i++) {
+			
+				if (lastNode.eq == null)
+					lastNode.eq = new TrieHybride();
+				
+				lastNode = lastNode.eq.ajouterCaractere(mot.charAt(i));
+			}
+
+			this.lastInsert++;
+			lastNode.ordreInsert+=this.lastInsert;
+			lastNode.isFinDeMot = true; 
+		}
+		*/
+		//Pour Equilibrage
+	
 		if(this.key == Character.MAX_VALUE)
 			this.key = mot.charAt(0);
 		insert(mot, 0, this);
 		equilibrage(this);
-	}
+	}	
 	private static void equilibrage(TrieHybride t){
 		int max_inf = (t.inf == null) ? 0 : t.inf.comptageMots();
 		int max_sup = (t.sup == null) ? 0 : t.sup.comptageMots();
@@ -178,6 +200,7 @@ public class TrieHybride implements RTrie{
 
 }
 	private static TrieHybride insert(String mot, int i, TrieHybride t){
+
 		if(i >= mot.length() )
 			return null;
 		if(t == null){
@@ -196,6 +219,7 @@ public class TrieHybride implements RTrie{
 				t.isFinDeMot = true;
 				t.ordreInsert = t.lastInsert;
 				t.lastInsert++;
+				//System.out.println("ORDRE :"+lastInsert);
 			}else
 				t.eq = tmp;
 		}
@@ -428,32 +452,31 @@ public class TrieHybride implements RTrie{
 		return 1+maxOfNumbers(hauteurInf,hauteurEq,hauteurSup);
 	}
 	
-	private void profondeurListe(ArrayList<Integer> liste,int profondeur)
+	private void profondeurCalcul(int[] calcul,int profondeur)
 	{		
-		if(this.isFinDeMot && this.eq==null)
+		if(this.inf==null &&this.sup==null && this.eq==null)
 		{
-			liste.add(profondeur);
+			calcul[0]+=profondeur;
+			calcul[1]++;
 		}
 		
 		if(this.inf!=null)
-			this.inf.profondeurListe(liste,profondeur+1);
+			this.inf.profondeurCalcul(calcul,profondeur+1);
 		
 		if(this.eq!=null)
-			this.eq.profondeurListe(liste,profondeur+1);
+			this.eq.profondeurCalcul(calcul,profondeur+1);
 		
 		if(this.sup!=null)
-			this.sup.profondeurListe(liste,profondeur+1);
+			this.sup.profondeurCalcul(calcul,profondeur+1);
 	}
 	
 	public int profondeurMoyenne()
 	{
-		ArrayList<Integer> listeProfondeur = new ArrayList<>();
-		this.profondeurListe(listeProfondeur,1);
-		int profondeurTotale = 0;
-		for(Integer i : listeProfondeur)
-			profondeurTotale+=i.intValue();
-		
-		return (int) Math.ceil(profondeurTotale/(double)this.comptageMotSansSousChaine());
+		int[] calculProfondeur = new int[2];
+		this.profondeurCalcul(calculProfondeur,1);
+		int profondeurTotale = calculProfondeur[0];
+		//return (int) Math.ceil(profondeurTotale/(double)this.comptageMotSansSousChaine());
+		return (int) Math.ceil(profondeurTotale/(double)calculProfondeur[1]);
 	}
 	
 	private int getNbSousNoeud(TrieHybride trie)
@@ -659,6 +682,7 @@ public class TrieHybride implements RTrie{
 		this.inf = copy.inf;
 		this.sup = copy.sup;
 		this.eq = copy.eq;
+		this.ordreInsert=copy.ordreInsert;
 	}
 	
 	@Override
@@ -849,18 +873,13 @@ public class TrieHybride implements RTrie{
 		return true;
 	}
 
-
-
-
 	@Override
-	public RTrie conversion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void printHTML(String name) {
-		// TODO Auto-generated method stub
+	public RTrie conversion(){
 		
+		PatriciaTrie trie = new PatriciaTrie();			
+		
+		return trie;
 	}
+
+
 }
