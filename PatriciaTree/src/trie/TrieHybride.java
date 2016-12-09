@@ -156,51 +156,56 @@ public class TrieHybride implements RTrie{
 			this.lastInsert++;
 			lastNode.ordreInsert+=this.lastInsert;
 			lastNode.isFinDeMot = true; 
-		}
-		*/
+		}*/
+		
 		//Pour Equilibrage
-	
+		
 		if(this.key == Character.MAX_VALUE)
 			this.key = mot.charAt(0);
 		insert(mot, 0, this);
-		equilibrage(this);
-	}	
+		TrieHybride.equilibrage(this);
+	}
 	private static void equilibrage(TrieHybride t){
-		int max_inf = (t.inf == null) ? 0 : t.inf.comptageMots();
-		int max_sup = (t.sup == null) ? 0 : t.sup.comptageMots();
-		if(max_inf *2 < max_sup){
+		int motsInf = (t.inf == null) ? 0 : t.inf.comptageMots();
+		int motsSup = (t.sup == null) ? 0 : t.sup.comptageMots();
+		
+		int motsTotal = motsInf+motsSup;
+		
+		if(motsInf<motsTotal/2){
 			t.rotationGauche();
 		}
-		else if(max_inf > max_sup *2){
+		else if(motsSup<motsTotal/2){
 			t.rotationDroite();
 		}
 		//return t;
 		
 	}
 	private void rotationDroite(){
-		  TrieHybride aux = (this.inf==null) ? null : new TrieHybride(this.inf);
-		  this.inf = (aux.sup==null) ? null : new TrieHybride(aux.sup);
-		  aux.sup =  new TrieHybride(this);
-		modifThis(aux);
+		  TrieHybride t = new TrieHybride(this.inf);
+		  this.inf = (t.sup==null) ? null : new TrieHybride(t.sup);
+		  t.sup =  new TrieHybride(this);
+		  switchNode(t);
 	}
 	
 	private void rotationGauche(){
-		  TrieHybride aux = (this.sup==null) ? null : new TrieHybride(this.sup);
-		  this.sup = (aux.inf==null) ? null : new TrieHybride(aux.inf);
-		  aux.inf = new TrieHybride(this);
-			modifThis(aux);
+		  TrieHybride t = new TrieHybride(this.sup);
+		  this.sup = (t.inf==null) ? null : new TrieHybride(t.inf);
+		  t.inf = new TrieHybride(this);
+		  switchNode(t);
 	}
-	private void modifThis(TrieHybride trie) {
-		if(trie==null) return;
-		this.key = trie.key;
-		this.isFinDeMot = trie.isFinDeMot;
-		this.inf = trie.inf;
-		this.eq = trie.eq;
-		this.sup = trie.sup;
-
-}
+	
+	public void switchNode(TrieHybride copy){
+		if(copy==null) return;
+		this.key = copy.key;
+		this.isFinDeMot = copy.isFinDeMot;
+		this.inf = copy.inf;
+		this.sup = copy.sup;
+		this.eq = copy.eq;
+		this.ordreInsert=copy.ordreInsert;
+	}
+	
 	private static TrieHybride insert(String mot, int i, TrieHybride t){
-
+		//System.out.println(i);
 		if(i >= mot.length() )
 			return null;
 		if(t == null){
@@ -662,6 +667,9 @@ public class TrieHybride implements RTrie{
 			}
 		}
 		
+		if(nodeOfWord.get(0).eq!=null)
+			return;
+		
 		if(nodeOfWord.get(0).inf==null)
 		{
 			this.switchNode(this.sup);
@@ -674,15 +682,6 @@ public class TrieHybride implements RTrie{
 			return;
 		}
 				
-	}
-	
-	public void switchNode(TrieHybride copy){
-		this.key = copy.key;
-		this.isFinDeMot = copy.isFinDeMot;
-		this.inf = copy.inf;
-		this.sup = copy.sup;
-		this.eq = copy.eq;
-		this.ordreInsert=copy.ordreInsert;
 	}
 	
 	@Override
@@ -872,14 +871,26 @@ public class TrieHybride implements RTrie{
 			return false;
 		return true;
 	}
-
-	@Override
+	
+	private void insertNode()
+	{
+		String prefixeLePlusGrand =""+this.key;
+		TrieHybride currentNode = this;
+		while(this.inf==null && this.sup==null && this.eq!=null)
+		{
+			prefixeLePlusGrand+=this.eq.key;
+		}
+	}
+	
 	public RTrie conversion(){
 		
-		PatriciaTrie trie = new PatriciaTrie();			
+		PatriciaTrie trie = new PatriciaTrie();
+		// Racine -> noeud profondeur 1 dans le patricia
+		// pareil pour inf et sup
+		//+ appel Recursif insertNode
+		
 		
 		return trie;
 	}
-
 
 }

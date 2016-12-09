@@ -33,11 +33,10 @@ public class Interface {
 		sc = new Scanner(System.in);
 	}
 	public static void main(String[] argc){
-		RTrie arbre;
 		Interface f = new Interface();
+		String choix = "";
 		do{
 			f.trie = f.choisirTypeTrie();
-			String choix = "";
 			boolean action = true;
 			do
 			{
@@ -56,13 +55,17 @@ public class Interface {
 			System.out.println(PATRICIA_TRIE + ". PatriciaTrie");
 			System.out.println(TRIE_HYBRIDE + ". Trie hybride");
 			System.out.println(EXIT + ". Quitter.");
+
 			String choix = this.saisirString();
 			if(choix.equals(""+PATRICIA_TRIE)){
 				return new PatriciaTrie();
 			}else if(choix.equals(""+TRIE_HYBRIDE)){
 				return new TrieHybride();
 			}else if(choix.equals(""+EXIT))
+			{
+				sc.close();
 				System.exit(0);
+			}
 				
 			
 		}while(!correct);
@@ -72,7 +75,6 @@ public class Interface {
 	
 	public void affichage(){
 		System.out.println("Action sur l'arbre : ");
-		System.out.println(SWITCH_ARBRE + ". Changer de type d'arbre.");
 		System.out.println(CHARGEMENT + ". Chargez un fichier.");
 		System.out.println(INSERTION + ". Insertion d'un mot..");
 		System.out.println(SUPPRESSION+ ". Suppression d'un mot.");
@@ -87,7 +89,7 @@ public class Interface {
 		str += (this.trie instanceof PatriciaTrie) ? "Trie Hybride.\n" + FUSION +". Fusion de deux PatriciaTrie." : "PatriciaTrie.";
 		System.out.println(str);
 		System.out.println(HTML + ". Générer HTML.");
-		
+		System.out.println(SWITCH_ARBRE + ". Retour.");
 		
 	}
 	
@@ -125,6 +127,7 @@ public class Interface {
 		case PREFIXE:
 			String mot = saisirMot();
 			System.out.println("L'arbre possède " + trie.prefixe(mot) + " mots commençant par " + mot);
+			break;
 		case HAUTEUR:
 			System.out.println("L'arbre a une hauteur de " + trie.hauteur()+"." );
 			break;
@@ -137,9 +140,12 @@ public class Interface {
 			trie.printHTML("trie"+ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-uu_hh-mm-ss")),true);
 			break;
 		case FUSION:
-			/*if (this.trie instanceof PatriciaTrie) {
-					((PatriciaTrie) this.trie).fusion(t, copy);
-			}*/
+			if (this.trie instanceof PatriciaTrie) {
+				System.out.println("Saisir votre fichier : ");
+				PatriciaTrie copy = new PatriciaTrie();
+				copy.insertionListeMot(Interface.lectureFichier(saisirMot()));
+					this.trie=PatriciaTrie.fusion((PatriciaTrie) this.trie, copy);
+			}
 		default:
 			System.out.println("Action incorrecte !");
 			break;
