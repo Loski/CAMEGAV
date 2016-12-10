@@ -611,44 +611,51 @@ public class TrieHybride implements RTrie{
 			}
 		}
 		
-		//Si le mot à supprimé est une sous-chaîne
-		if(nodeOfWord.get(nodeOfWord.size()-1).eq!=null)
+		//Le mot n'existe pas dans l'arbre
+		if(i!=mot.length())
+			return;
+		
+		//Si le mot à supprimer est une sous-chaîne
+		TrieHybride lastNode = nodeOfWord.get(nodeOfWord.size()-1);
+		
+		if(lastNode.eq!=null)
 		{
-			nodeOfWord.get(nodeOfWord.size()-1).isFinDeMot=false;
+			lastNode.isFinDeMot=false;
 			return;
 		}
 		
-		//Si le mot a supprimé est la racine et la racine n'est pas utilisée dans les autres mots
+		//Si le mot a supprimer est la racine et la racine n'est pas utilisée dans les autres mots
+		TrieHybride root = nodeOfWord.get(0);
 		if(nodeOfWord.size()==1)
 		{
-			if(nodeOfWord.get(0).inf==null && nodeOfWord.get(0).sup==null)
+			if(root.inf==null && root.sup==null)
 			{
 				this.switchNode(new TrieHybride());
 				return;
 			}
 			
-			if(nodeOfWord.get(0).inf==null)
+			if(root.inf==null)
 			{
-				this.switchNode(nodeOfWord.get(0).sup);
+				this.switchNode(root.sup);
 				return;
 			}
 			
-			if(nodeOfWord.get(0).sup==null)
+			if(root.sup==null)
 			{
-				this.switchNode(nodeOfWord.get(0).inf);
+				this.switchNode(root.inf);
 				return;
 			}
 			
 			//Si il y a des mots dans les branches inf et sup
 			TrieHybride t = new TrieHybride();
-			t.key=nodeOfWord.get(0).inf.key;
-			t.isFinDeMot=nodeOfWord.get(0).inf.isFinDeMot;
-			t.eq=nodeOfWord.get(0).inf.eq;
-			t.inf=nodeOfWord.get(0).inf.inf;
-			TrieHybride ite = nodeOfWord.get(0).inf;
+			t.key=root.inf.key;
+			t.isFinDeMot=root.inf.isFinDeMot;
+			t.eq=root.inf.eq;
+			t.inf=root.inf.inf;
+			TrieHybride ite = root.inf;
 			while(ite.sup!=null)
 				ite=ite.sup;
-			ite.sup=nodeOfWord.get(0).sup;
+			ite.sup=root.sup;
 			t.sup=ite;
 			this.switchNode(t);
 			return;
@@ -656,65 +663,66 @@ public class TrieHybride implements RTrie{
 		
 		for(i=nodeOfWord.size()-1;i>=1;i--)
 		{
-			currentNode = nodeOfWord.get(i);			
+			currentNode = nodeOfWord.get(i);		
+			TrieHybride nodeParent = nodeOfWord.get(i-1);
 			
 			if(currentNode.inf==null && currentNode.sup==null)
 			{
-				if(nodeOfWord.get(i-1).inf==currentNode)
+				if(nodeParent.inf==currentNode)
 				{
-					nodeOfWord.get(i-1).inf=null;
+					nodeParent.inf=null;
 					return;
 				}
 				
-				if(nodeOfWord.get(i-1).sup==currentNode)
+				if(nodeParent.sup==currentNode)
 				{
-					nodeOfWord.get(i-1).sup=null;
+					nodeParent.sup=null;
 					return;
 				}
 				
-				nodeOfWord.get(i-1).eq=null;
-				if(nodeOfWord.get(i-1).isFinDeMot)
+				nodeParent.eq=null;
+				if(nodeParent.isFinDeMot)
 					return;
 			}
 			else
 			{
-				if(nodeOfWord.get(i).inf==null)
+				if(currentNode.inf==null)
 				{
-					nodeOfWord.get(i-1).eq = nodeOfWord.get(i).sup;
+					nodeParent.eq = currentNode.sup;
 					return;
 				}
-				if(nodeOfWord.get(i).sup==null)
+				if(currentNode.sup==null)
 				{
-					nodeOfWord.get(i-1).eq = nodeOfWord.get(i).inf;
+					nodeParent.eq = currentNode.inf;
 					return;
 				}
 				
 				//Si il y a des mots dans les branches inf et sup
 				TrieHybride t = new TrieHybride();
-				t.key=nodeOfWord.get(i).inf.key;
-				t.isFinDeMot=nodeOfWord.get(i).inf.isFinDeMot;
-				t.eq=nodeOfWord.get(i).inf.eq;
-				t.inf=nodeOfWord.get(i).inf.inf;
-				TrieHybride ite = nodeOfWord.get(i).inf;
+				t.key=currentNode.inf.key;
+				t.isFinDeMot=currentNode.inf.isFinDeMot;
+				t.eq=currentNode.inf.eq;
+				t.inf=currentNode.inf.inf;
+				TrieHybride ite = currentNode.inf;
 				while(ite.sup!=null)
 					ite=ite.sup;
-				ite.sup=nodeOfWord.get(i).sup;
+				ite.sup=currentNode.sup;
 				t.sup=ite;
-				nodeOfWord.get(i-1).eq=t;
+				nodeParent.eq=t;
 				return;
 			}
 		}
 		
-		if(nodeOfWord.get(0).eq!=null)
+		if(root.eq!=null)
 			return;
 		
-		if(nodeOfWord.get(0).inf==null)
+		if(root.inf==null)
 		{
 			this.switchNode(this.sup);
 			return;
 		}
 		
-		if(nodeOfWord.get(0).sup==null)
+		if(root.sup==null)
 		{
 			this.switchNode(this.inf);
 			return;
@@ -910,23 +918,67 @@ public class TrieHybride implements RTrie{
 		return true;
 	}
 	
-	private void insertNode()
-	{
-		String prefixeLePlusGrand =""+this.key;
-		TrieHybride currentNode = this;
-		while(this.inf==null && this.sup==null && this.eq!=null)
+	private void insertNode(String prefixe,PatriciaTrie trie)
+	{		
+		if(this.inf==null && this.sup==null)
 		{
-			prefixeLePlusGrand+=this.eq.key;
+			prefixe+=this.key;
+			if(this.eq==null)
+				trie.setNode(prefixe);
+			else if(!this.isFinDeMot)
+				this.eq.insertNode(prefixe,trie);
+			else
+			{
+				int index = PatriciaTrie.getIndexKey(prefixe);
+				
+				if(trie.getFrère()[index]==null)
+					trie.getFrère()[index]=new Node(null);
+				
+				if(trie.getFrère()[index].getLink()==null)
+					trie.getFrère()[index].setLink(new PatriciaTrie());
+				
+				trie.setNode(prefixe);
+				this.eq.insertNode("",trie.getFrère()[index].getLink());
+			}
 		}
+		else
+		{
+			int index = PatriciaTrie.getIndexKey(prefixe);
+			
+			if(trie.getFrère()[index]==null)
+				trie.getFrère()[index]=new Node(null);
+			
+			if(trie.getFrère()[index].getLink()==null)
+				trie.getFrère()[index].setLink(new PatriciaTrie());
+			
+			if(this.inf!=null)
+				this.inf.insertNode("",trie.getFrère()[index].getLink());
+			if(this.eq!=null)
+			{
+				trie.setNode(prefixe);
+				this.eq.insertNode(this.key+"",trie.getFrère()[index].getLink());
+			}
+			if(this.sup!=null)
+				this.sup.insertNode("",trie.getFrère()[index].getLink());
+		}
+		
 	}
 	
 	public RTrie conversion(){
 		
 		PatriciaTrie trie = new PatriciaTrie();
-		// Racine -> noeud profondeur 1 dans le patricia
-		// pareil pour inf et sup
-		//+ appel Recursif insertNode
 		
+		if(this.estVide())
+			return trie;
+		
+		trie.setNode(this.key+"");
+		
+		if(this.inf!=null)
+			this.inf.insertNode("",trie);
+		if(this.eq!=null)
+			this.eq.insertNode(this.key+"",trie);
+		if(this.sup!=null)
+			this.sup.insertNode("",trie);
 		
 		return trie;
 	}

@@ -32,7 +32,12 @@ div.orgChart div.node
 .wordEnd, .wordEnd h2
 {
 	cursor:pointer;
-	background:green!important;
+	background:#5C8B55!important;
+}
+
+.wordEnd
+{
+	border: 2px solid #40613B!important;
 }
 
 .wordEnd:hover, .wordEnd:hover h2

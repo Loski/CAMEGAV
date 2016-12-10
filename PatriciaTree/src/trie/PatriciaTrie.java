@@ -509,7 +509,16 @@ public class PatriciaTrie implements RTrie, Serializable{
 
 
 
-
+		public void setNode(String str)
+		{
+			if(str==null || str.isEmpty())
+				return;
+			
+			if(this.frère[getIndexKey(str)]==null)
+				this.frère[getIndexKey(str)]=new Node(str);
+			else
+				this.frère[getIndexKey(str)].setKey(str);
+		}
 		   
 }
 
