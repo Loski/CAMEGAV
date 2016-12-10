@@ -4,17 +4,22 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PatriciaTrieTest {
 	PatriciaTrie patricia1 = new PatriciaTrie();
 	public PatriciaTrie patricia2 = new PatriciaTrie();
 	public final static String FILE = "jUnitTestFile";
+	public final static String SH1 = "shakespeare\\1henryiv";
+	public final static String SH2 = "shakespeare\\othello";
+	public final static String SHF = "shakespeare\\fusion";
 	
 	
 	@Test
 	public final void testFusion(){
-		assertEquals(PatriciaTrie.fusion(PatriciaTrie.lectureFichier("FUSIONA"), PatriciaTrie.lectureFichier("FUSIONB")), PatriciaTrie.lectureFichier("FUSIONALL"));
+		assertEquals(PatriciaTrie.fusion(PatriciaTrie.lectureFichier(SH1), PatriciaTrie.lectureFichier(SH2)), PatriciaTrie.lectureFichier(SHF));
+		assertFalse((PatriciaTrie.fusion(PatriciaTrie.lectureFichier(FILE), PatriciaTrie.lectureFichier(SH2))).equals(PatriciaTrie.lectureFichier(SHF)));
 	}
 	@Test
 	public final void testIndexGetKey() {
@@ -102,7 +107,7 @@ public class PatriciaTrieTest {
 		assertEquals(p.listeMots(), p.conversion().listeMots());
 	}
 	
-	@Test
+	@Ignore
 	public final void testConversionHybrid() {
 		RTrie p = new TrieHybride();
 		p.insertionListeMot(Interface.lectureFichier(FILE));		

@@ -41,8 +41,7 @@ public class Node {
 			else if (copy == null){
 				return original;
 			}else{
-				int prefixe = PatriciaTrie.prefixe(original.key, copy.key);
-				if(prefixe == original.key.length() && prefixe == copy.key.length()){
+				if(copy.key.equals(original.key)){
 					if(original.key.endsWith(PatriciaTrie.END_CHAR.toString())){  //Même mot final sur le noeud
 						return original;
 					}
@@ -50,6 +49,7 @@ public class Node {
 						 //Même préfixe, on fusionne les fils.
 					}
 				}else{
+						int prefixe = PatriciaTrie.prefixe(original.key, copy.key);
 						original.link =	PatriciaTrie.addPrefixEachWord(original.link, original.key.substring(prefixe));
 						original.key = original.key.substring(0, prefixe);
 						copy.link = PatriciaTrie.addPrefixEachWord(copy.link, copy.key.substring(prefixe));
