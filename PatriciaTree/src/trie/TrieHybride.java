@@ -139,7 +139,7 @@ public class TrieHybride implements RTrie{
 	public void insertLetter(String mot){
 		if(this.key == Character.MAX_VALUE)
 			this.key = mot.charAt(0);
-		insertMot(mot, 0, this);
+		insertOnlyLetter(mot, 0, this);
 	}
 	public void insererMot(String mot) {
 		
@@ -167,9 +167,9 @@ public class TrieHybride implements RTrie{
 		if(this.key == Character.MAX_VALUE)
 			this.key = mot.charAt(0);
 		insert(mot, 0, this);
-	//	TrieHybride.equilibrage(this);
+		TrieHybride.equilibrage(this);
 	}
-	private static void equilibrage(TrieHybride t){
+	static void equilibrage(TrieHybride t){
 		int motsInf = (t.inf == null) ? 0 : t.inf.comptageMots();
 		int motsSup = (t.sup == null) ? 0 : t.sup.comptageMots();
 		
@@ -207,10 +207,18 @@ public class TrieHybride implements RTrie{
 		this.eq = copy.eq;
 		this.ordreInsert=copy.ordreInsert;
 	}
+	public void switchNodeBool(TrieHybride copy){
+		if(copy==null) return;
+		this.key = copy.key;
+		this.isFinDeMot = copy.isFinDeMot || this.isFinDeMot;
+		this.inf = copy.inf;
+		this.sup = copy.sup;
+		this.eq = copy.eq;
+		this.ordreInsert=copy.ordreInsert;
+	}
 	
 	private static TrieHybride insert(String mot, int i, TrieHybride t){
 		//System.out.println(i);
-		System.out.println(mot.length());
 		if(i >= mot.length() )
 			return null;
 		if(t == null){
@@ -229,6 +237,31 @@ public class TrieHybride implements RTrie{
 				t.isFinDeMot = true;
 				t.ordreInsert = t.lastInsert;
 				t.lastInsert++;
+				//System.out.println("ORDRE :"+lastInsert);
+			}else
+				t.eq = tmp;
+		}
+		/*if(t!=null)
+			equilibrage(t);*/
+		return t;
+	}
+	private static TrieHybride insertOnlyLetter(String mot, int i, TrieHybride t){
+
+		if(i >= mot.length() )
+			return null;
+		if(t == null){
+			t = new TrieHybride(mot.charAt(i));
+		}
+		if(mot.charAt(i) < t.key){
+			t.inf = insertOnlyLetter(mot, i, t.inf);
+		}
+		else if(mot.charAt(i) > t.key){
+			t.sup = insertOnlyLetter(mot, i, t.sup);
+
+		}
+		else{
+			TrieHybride tmp =  insertOnlyLetter(mot, i +1, t.eq);
+			if(tmp == null){
 				//System.out.println("ORDRE :"+lastInsert);
 			}else
 				t.eq = tmp;
@@ -945,5 +978,10 @@ public class TrieHybride implements RTrie{
 	public void setSup(TrieHybride sup) {
 		this.sup = sup;
 	}
-
+	public TrieHybride getLastEq(){
+		TrieHybride eq = this;
+		while(eq.eq != null)
+			eq = eq.eq;
+		return eq;
+	}
 }

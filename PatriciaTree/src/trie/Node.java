@@ -92,12 +92,17 @@ public class Node {
 				trie.insererMot(this.key.substring(0, this.key.length()-1));
 			}
 			else if(this.getLink()!= null){
-				trie.insererMot(this.key.substring(0, this.key.length()));
+				if(this.getLink().getFrère()[0]!= null){
+					trie.insererMot(this.key.substring(0, this.key.length()));
+				}else{
+					trie.insertLetter(this.key.substring(0, this.key.length()));
+				}
+					
 				TrieHybride tmp = trie;
 				while(tmp.getEq()!= null){
 					tmp = tmp.getEq();
 				}
-				trie.setEq((TrieHybride) this.getLink().conversion());
+				tmp.setEq((TrieHybride) this.getLink().conversion());
 			}
 			
 			return trie;	
