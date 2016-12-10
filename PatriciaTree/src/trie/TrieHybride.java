@@ -964,7 +964,7 @@ public class TrieHybride implements RTrie{
 		
 	}
 	
-	public RTrie conversion(){
+	public PatriciaTrie conversion(){
 		
 		PatriciaTrie trie = new PatriciaTrie();
 		
