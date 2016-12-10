@@ -431,8 +431,10 @@ public class TrieHybride implements RTrie{
 	
 	public List<String> listeMots()
 	{
-		ArrayList<String> word = new ArrayList<String>();
-		return this.listeMots("", word);
+		ArrayList<String> liste = new ArrayList<String>();
+		this.listeMots("", liste);
+		liste.sort(String.CASE_INSENSITIVE_ORDER);
+		return liste;
 	}
 	
 	public int comptageNil()

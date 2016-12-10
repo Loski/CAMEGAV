@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hamcrest.core.SubstringMatcher;
+
 public class PatriciaTrie implements RTrie, Serializable{
 	/**
 	 * 
@@ -204,8 +206,8 @@ public class PatriciaTrie implements RTrie, Serializable{
 			for(Node n: this.frère){
 				if(n == null)
 					continue;
-				if(n.getKey().endsWith(END_CHAR.toString()))  // Fin mot
-					liste.add(prefixe  + n.getKey());
+				if(n.isLeaf())  // Fin mot
+					liste.add(prefixe  + n.getKey().substring(0, n.getKey().length()-1));
 				else if(n.getLink() != null){
 					n.getLink().listeMots(prefixe+n.getKey(), liste);
 				}
@@ -479,11 +481,6 @@ public class PatriciaTrie implements RTrie, Serializable{
 		@Override
 		public RTrie conversion() {
 			TrieHybride trie = new TrieHybride(), tmp = trie, tmp_before = trie;
-			int i = 0;
-			for(Node n: this.frère){
-				if(n!=null)
-					i++;
-			}
 			for(Node n : this.frère){
 				if(n !=null){
 					TrieHybride t = (TrieHybride) n.conversion();
@@ -491,14 +488,10 @@ public class PatriciaTrie implements RTrie, Serializable{
 						continue;
 					}
 					else{
-						while(tmp.getSup()!=null){
-							tmp = tmp.getSup();
-						}
+						tmp.setSup(new TrieHybride());
+						tmp = tmp.getSup();
 						tmp.switchNodeBool((TrieHybride) n.conversion());
-						if(i > 1){
-							tmp.setSup(new TrieHybride());
-							i--;
-						}
+
 					}
 					
 				}

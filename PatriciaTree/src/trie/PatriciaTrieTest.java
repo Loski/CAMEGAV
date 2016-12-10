@@ -2,6 +2,8 @@ package trie;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 public class PatriciaTrieTest {
@@ -94,8 +96,17 @@ public class PatriciaTrieTest {
 	}
 
 	@Test
-	public final void testConversion() {
-		fail("Not yet implemented"); // TODO
+	public final void testConversionPatricia() {
+		RTrie p = new PatriciaTrie();
+		p.insertionListeMot(Interface.lectureFichier(FILE));		
+		assertEquals(p.listeMots(), p.conversion().listeMots());
+	}
+	
+	@Test
+	public final void testConversionHybrid() {
+		RTrie p = new TrieHybride();
+		p.insertionListeMot(Interface.lectureFichier(FILE));		
+		assertEquals(p.listeMots(), p.conversion().listeMots());
 	}
 
 	@Test

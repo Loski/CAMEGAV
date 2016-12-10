@@ -7,11 +7,12 @@ public class PatriciaTest {
 	public final static  String FILE = "jUnitTestFile";
 
 	public static void main(String[] args) {
-		PatriciaTrie p = new PatriciaTrie();
-		p.insertionListeMot(Interface.lectureFichier("test"));
+		RTrie p = new PatriciaTrie();
+		p.insertionListeMot(Interface.lectureFichier(FILE));
 		p.printHTML("Switch", true);
-		p.conversion().printHTML("michel", true
-				);
+		
+		System.out.println(p.listeMots());
+		ArrayList<String> o = (ArrayList<String>) p.listeMots();
+		System.out.println(p.conversion().listeMots());
 	}
-
 }
