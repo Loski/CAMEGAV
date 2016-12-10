@@ -294,7 +294,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 			for(Node n: this.frère){
 				if(n!=null) 
 				{
-					if(n.getKey().endsWith(END_CHAR.toString()))
+					if(n.isLeaf())
 						cpt++;
 					else
 						if(n.getLink() != null)
@@ -334,32 +334,33 @@ public class PatriciaTrie implements RTrie, Serializable{
 		}
 
 		@Override
-		public int profondeurMoyenne() {
+		public double profondeurMoyenne() {
 			int[] result = profondeurFils(0);
+			System.out.println(result[0]);
+			System.out.println(result[1]);
 			if (result[1] == 0)
 				return 0;
 			return result[0]/result[1];
 		}
-
-		protected int[] profondeurFils(int level) {
-			boolean allNull = true;
+		private int[] profondeurFils(int level) {
 			int[] result = {0, 0};
 			int[] tmp;
-			int compteur = 0, compteur_end = 0;
+			int compteur_end = 0;
 			for (Node n : this.frère) {
 				if(n != null){
-					compteur_end++;
-					compteur++;
-					if(n.getLink() != null){
+					if(n.isLeaf()){
+						compteur_end++;
+						result[0]++;
+					}
+					else{
 						tmp = n.getLink().profondeurFils(level+1);
 						result[0] += tmp[0];
 						result[1] += tmp[1];
-						compteur_end--;
 					}
 				}
 			}
-			if(compteur_end != 0){
-				int result_end_branch[] = {compteur * level, compteur_end * 1};
+			if(compteur_end!=0){
+				int result_end_branch[] = {compteur_end * level + result[0],  compteur_end  + result[1]};
 				return result_end_branch;
 			}
 
@@ -477,9 +478,26 @@ public class PatriciaTrie implements RTrie, Serializable{
 			}
 		}
 		
-		public RTrie conversion(){
-			return null;
+		@Override
+		public RTrie conversion() {
+			TrieHybride trie = new TrieHybride(), tmp = trie, tmp_before = trie;
+			for(Node n : this.frère){
+				if(n !=null){
+					while(tmp.getSup()!=null){
+						tmp = tmp.getSup();
+					}
+					TrieHybride t = (TrieHybride) n.conversion();
+					if(t == null)
+						tmp.setFinDeMot(true);
+					else{
+						tmp.switchNode((TrieHybride) n.conversion());
+						tmp.setSup(new TrieHybride());
+					}
+				}
+			}
+			return trie;
 		}
+
 
 
 

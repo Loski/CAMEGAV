@@ -136,7 +136,11 @@ public class TrieHybride implements RTrie{
 		
 		return this;
 	}
-	
+	public void insertLetter(String mot){
+		if(this.key == Character.MAX_VALUE)
+			this.key = mot.charAt(0);
+		insertMot(mot, 0, this);
+	}
 	public void insererMot(String mot) {
 		
 		/*if (mot != null && !mot.isEmpty()) {
@@ -163,7 +167,7 @@ public class TrieHybride implements RTrie{
 		if(this.key == Character.MAX_VALUE)
 			this.key = mot.charAt(0);
 		insert(mot, 0, this);
-		TrieHybride.equilibrage(this);
+	//	TrieHybride.equilibrage(this);
 	}
 	private static void equilibrage(TrieHybride t){
 		int motsInf = (t.inf == null) ? 0 : t.inf.comptageMots();
@@ -206,6 +210,7 @@ public class TrieHybride implements RTrie{
 	
 	private static TrieHybride insert(String mot, int i, TrieHybride t){
 		//System.out.println(i);
+		System.out.println(mot.length());
 		if(i >= mot.length() )
 			return null;
 		if(t == null){
@@ -228,8 +233,8 @@ public class TrieHybride implements RTrie{
 			}else
 				t.eq = tmp;
 		}
-		if(t!=null)
-			equilibrage(t);
+		/*if(t!=null)
+			equilibrage(t);*/
 		return t;
 	}
 	public boolean recherche(String mot) {
@@ -270,7 +275,7 @@ public class TrieHybride implements RTrie{
 		
 		return false;
 	}	
-	
+
 	public boolean rechercheNotRecursive(String mot) {
 		
 		if (mot == null || mot.isEmpty())
@@ -891,6 +896,54 @@ public class TrieHybride implements RTrie{
 		
 		
 		return trie;
+	}
+
+	public int getOrdreInsert() {
+		return ordreInsert;
+	}
+
+	public void setOrdreInsert(int ordreInsert) {
+		this.ordreInsert = ordreInsert;
+	}
+
+	public char getKey() {
+		return key;
+	}
+
+	public void setKey(char key) {
+		this.key = key;
+	}
+
+	public boolean isFinDeMot() {
+		return isFinDeMot;
+	}
+
+	public void setFinDeMot(boolean isFinDeMot) {
+		this.isFinDeMot = isFinDeMot;
+	}
+
+	public TrieHybride getInf() {
+		return inf;
+	}
+
+	public void setInf(TrieHybride inf) {
+		this.inf = inf;
+	}
+
+	public TrieHybride getEq() {
+		return eq;
+	}
+
+	public void setEq(TrieHybride eq) {
+		this.eq = eq;
+	}
+
+	public TrieHybride getSup() {
+		return sup;
+	}
+
+	public void setSup(TrieHybride sup) {
+		this.sup = sup;
 	}
 
 }

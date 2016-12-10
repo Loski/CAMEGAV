@@ -79,5 +79,27 @@ public class Node {
 			} else if (!link.equals(other.link))
 				return false;
 			return true;
-		}		
+		}
+		public boolean isLeaf(){
+			return key.endsWith(PatriciaTrie.END_CHAR.toString());
+		}
+		
+		public RTrie conversion(){
+			TrieHybride trie = new TrieHybride();
+			if(this.isLeaf()){
+				if(this.key.length() == 1)
+					return null;
+				trie.insererMot(this.key.substring(0, this.key.length()-1));
+			}
+			else if(this.getLink()!= null){
+				trie.insererMot(this.key.substring(0, this.key.length()));
+				TrieHybride tmp = trie;
+				while(tmp.getEq()!= null){
+					tmp = tmp.getEq();
+				}
+				trie.setEq((TrieHybride) this.getLink().conversion());
+			}
+			
+			return trie;	
+		}
 }
