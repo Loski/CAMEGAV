@@ -24,14 +24,14 @@ $(document).ready(function()
             nodeToTest = parent;
         }
 
-        $("body").append("<div id=\"wordDisplay\"></div>");
+        /*$("body").append("<div id=\"wordDisplay\"></div>");
         $("#wordDisplay").css("position","absolute");
         $("#wordDisplay").css("font-size","5em");
         $("#wordDisplay").css("top",event.pageY);
         $("#wordDisplay").css("background","white");
         $("#wordDisplay").css("left",event.pageX);
         
-        $("#wordDisplay").text(word.split("").reverse().join(""));
+        $("#wordDisplay").text(word.split("").reverse().join(""));*/
 
     });
 
