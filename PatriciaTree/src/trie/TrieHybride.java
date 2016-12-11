@@ -169,7 +169,7 @@ public class TrieHybride implements RTrie{
 		insert(mot, 0, this);
 		TrieHybride.equilibrage(this);
 	}
-	static void equilibrage(TrieHybride t){
+	public static void equilibrage(TrieHybride t){
 		int motsInf = (t.inf == null) ? 0 : t.inf.comptageMots();
 		int motsSup = (t.sup == null) ? 0 : t.sup.comptageMots();
 		
@@ -199,7 +199,9 @@ public class TrieHybride implements RTrie{
 	}
 	
 	public void switchNode(TrieHybride copy){
-		if(copy==null) return;
+		if(copy==null)
+			copy = new TrieHybride();
+		
 		this.key = copy.key;
 		this.isFinDeMot = copy.isFinDeMot;
 		this.inf = copy.inf;
@@ -207,6 +209,7 @@ public class TrieHybride implements RTrie{
 		this.eq = copy.eq;
 		this.ordreInsert=copy.ordreInsert;
 	}
+
 	public void switchNodeBool(TrieHybride copy){
 		if(copy==null) return;
 		this.key = copy.key;
@@ -245,6 +248,7 @@ public class TrieHybride implements RTrie{
 			equilibrage(t);*/
 		return t;
 	}
+
 	private static TrieHybride insertOnlyLetter(String mot, int i, TrieHybride t){
 
 		if(i >= mot.length() )
@@ -270,6 +274,7 @@ public class TrieHybride implements RTrie{
 			equilibrage(t);*/
 		return t;
 	}
+
 	public boolean recherche(String mot) {
 		
 		if (mot == null || mot.isEmpty())
@@ -735,6 +740,9 @@ public class TrieHybride implements RTrie{
 	@Override
 	public String toString() {
 		
+		if(this.estVide())
+			return "EMPTY TRIE";
+		
 		String s =  "[key=" + key+ "]";
 		if(this.inf!=null)
 			s+= "\n[ Inf of " + key + " : \t" + this.inf.toString() + "]\n";
@@ -792,14 +800,22 @@ public class TrieHybride implements RTrie{
 		    "</script>"+
 		"</head>"
 		    +"<body>"+
-		    "\n\n<ul id='tree'><ul>");
-		    pw.println(parcourirArbreHTML(showNullPointer,"rootNode"));
-		    pw.println("</ul>\n</ul>\n<div id='main'></div>\n</body>\n</html>");
-		    pw.println("<script>"+
+		    "\n\n");
+		    if(!this.estVide())
+		    {
+		    	pw.println("<ul id='tree'><ul>");
+		    	pw.println(parcourirArbreHTML(showNullPointer,"rootNode"));
+		    	pw.println("</ul>\n</ul>\n<div id='main'></div>\n</body>\n</html>");
+		    	pw.println("<script>"+
 		    "$(function() {"+
 		        "$('#tree').remove()"+
 		    "});"+
 		    "</script>");
+		    }
+		    else
+		    {
+		    	pw.println("<ul id='tree'>L'arbre est vide<ul>");
+		    }
 		    pw.close();
 		    System.out.println("End generation " + name);
 		}
@@ -812,7 +828,7 @@ public class TrieHybride implements RTrie{
 
 	
 	public String parcourirArbreHTML(boolean showNullPointer,String clazz){
-		
+				
 		String str = "";
 		
 		if(this.isFinDeMot)
@@ -910,8 +926,6 @@ public class TrieHybride implements RTrie{
 			return false;
 		if (key != other.key)
 			return false;
-		if (ordreInsert != other.ordreInsert)
-			return false;
 		if (sup == null) {
 			if (other.sup != null)
 				return false;
@@ -921,47 +935,107 @@ public class TrieHybride implements RTrie{
 	}
 	
 	private void insertNode(String prefixe,PatriciaTrie trie)
-	{		
+	{	
 		if(this.inf==null && this.sup==null)
-		{
+		{	
 			prefixe+=this.key;
-			if(this.eq==null)
-				trie.setNode(prefixe);
+			
+			if(this.eq==null && this.isFinDeMot)
+				trie.setNode(prefixe+PatriciaTrie.END_CHAR);
 			else if(!this.isFinDeMot)
 				this.eq.insertNode(prefixe,trie);
 			else
-			{
-				int index = PatriciaTrie.getIndexKey(prefixe);
+			{				
+				if(trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)]==null)
+					trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)]=new Node(null);
 				
-				if(trie.getFrère()[index]==null)
-					trie.getFrère()[index]=new Node(null);
-				
-				if(trie.getFrère()[index].getLink()==null)
-					trie.getFrère()[index].setLink(new PatriciaTrie());
+				if(trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink()==null)
+					trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].setLink(new PatriciaTrie());
 				
 				trie.setNode(prefixe);
-				this.eq.insertNode("",trie.getFrère()[index].getLink());
+				trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink().setNode(PatriciaTrie.END_CHAR+"");
+				this.eq.insertNode("",trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink());
 			}
 		}
 		else
-		{
-			int index = PatriciaTrie.getIndexKey(prefixe);
+		{	
+			prefixe+=this.key;
 			
-			if(trie.getFrère()[index]==null)
-				trie.getFrère()[index]=new Node(null);
+			if(trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)]==null)
+				trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)]=new Node(null);
 			
-			if(trie.getFrère()[index].getLink()==null)
-				trie.getFrère()[index].setLink(new PatriciaTrie());
+			if(trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink()==null)
+				trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].setLink(new PatriciaTrie());
+			
+			if(this.eq!=null)
+			{				
+				trie.setNode(prefixe.substring(0,prefixe.length()-1));
+				if(prefixe.length()==1)
+				{
+					if(!this.isFinDeMot)
+						this.eq.insertNode(this.key+"",trie);
+					else
+					{
+						PatriciaTrie fils = trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink();
+						
+						if(fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)]==null)
+							fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)]=new Node(this.key+"");
+						
+						if(fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink()==null)
+							fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)].setLink(new PatriciaTrie(PatriciaTrie.END_CHAR+""));
+						
+						this.eq.insertNode("",fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink());
+						
+					}
+				}
+				else
+				{
+					if(!this.isFinDeMot)
+						this.eq.insertNode(this.key+"",trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink());
+					else
+					{
+						PatriciaTrie fils = trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink();
+						
+						if(fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)]==null)
+							fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)]=new Node(this.key+"");
+						
+						if(fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink()==null)
+							fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)].setLink(new PatriciaTrie(PatriciaTrie.END_CHAR+""));
+						
+						this.eq.insertNode("",fils.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink());
+						
+					}
+				}
+			}
+			else
+			{
+				if(prefixe.length()==1)
+				{
+					trie.setNode(prefixe+PatriciaTrie.END_CHAR);
+				}
+				else
+				{
+					trie.setNode(prefixe.substring(0,prefixe.length()-1));
+					trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink().setNode(this.key+""+PatriciaTrie.END_CHAR);
+				}
+				
+			}
 			
 			if(this.inf!=null)
-				this.inf.insertNode("",trie.getFrère()[index].getLink());
-			if(this.eq!=null)
 			{
-				trie.setNode(prefixe);
-				this.eq.insertNode(this.key+"",trie.getFrère()[index].getLink());
+				if(prefixe.length()==1)
+					this.inf.insertNode("",trie);
+				else
+					this.inf.insertNode("",trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink());
 			}
 			if(this.sup!=null)
-				this.sup.insertNode("",trie.getFrère()[index].getLink());
+			{
+				if(prefixe.length()==1)
+					this.sup.insertNode("",trie);
+				else
+					this.sup.insertNode("",trie.getFrère()[PatriciaTrie.getIndexKey(prefixe)].getLink());
+			}
+			
 		}
 		
 	}
@@ -974,6 +1048,16 @@ public class TrieHybride implements RTrie{
 			return trie;
 		
 		trie.setNode(this.key+"");
+		
+		if(this.isFinDeMot)
+		{
+			if(trie.getFrère()[PatriciaTrie.getIndexKey(this.key+"")]==null)
+				trie.getFrère()[PatriciaTrie.getIndexKey(this.key+"")]=new Node(this.key+"");
+			
+			if(trie.getFrère()[PatriciaTrie.getIndexKey(this.key+"")].getLink()==null)
+				trie.getFrère()[PatriciaTrie.getIndexKey(this.key+"")].setLink(new PatriciaTrie(PatriciaTrie.END_CHAR+""));
+		}
+		
 		
 		if(this.inf!=null)
 			this.inf.insertNode("",trie);
@@ -1032,10 +1116,12 @@ public class TrieHybride implements RTrie{
 	public void setSup(TrieHybride sup) {
 		this.sup = sup;
 	}
+
 	public TrieHybride getLastEq(){
 		TrieHybride eq = this;
 		while(eq.eq != null)
 			eq = eq.eq;
 		return eq;
 	}
+
 }
