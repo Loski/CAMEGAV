@@ -230,7 +230,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 			if(t == null){
 				t = new PatriciaTrie(mot);
 			}
-			int index = t.getIndexKey(mot);
+			int index = PatriciaTrie.getIndexKey(mot);
 			Node node  = t.frère[index];
 			if(node == null || t.estVide()){
 				t.setNode(index, new Node(mot));
@@ -336,7 +336,7 @@ public class PatriciaTrie implements RTrie, Serializable{
 		}
 
 		@Override
-		public double profondeurMoyenne() {
+		public int profondeurMoyenne() {
 			int[] result = profondeurFils(0);
 			if (result[1] == 0)
 				return 0;
@@ -403,6 +403,10 @@ public class PatriciaTrie implements RTrie, Serializable{
 		public boolean estVide() {
 			if(this.frère != null){
 				return false;
+			}
+			for(Node n : this.frère){
+				if(n!=null)
+					return false;
 			}
 			return true;
 		}
@@ -480,23 +484,23 @@ public class PatriciaTrie implements RTrie, Serializable{
 		
 		@Override
 		public RTrie conversion() {
-			TrieHybride trie = new TrieHybride(), tmp = trie, tmp_before = trie;
+			TrieHybride trie = new TrieHybride(), tmp = trie;
 			for(Node n : this.frère){
 				if(n !=null){
 					TrieHybride t = (TrieHybride) n.conversion();
-					if(t ==null){
+					if(t == null){
 						continue;
 					}
 					else{
-						tmp.setSup(new TrieHybride());
-						tmp = tmp.getSup();
-						tmp.switchNodeBool((TrieHybride) n.conversion());
-
+						if(tmp.getKey() != Character.MAX_VALUE){
+							tmp.setSup(new TrieHybride());
+							tmp = tmp.getSup();
+						}
+						tmp.switchNode(t);
 					}
-					
 				}
 			}
-			TrieHybride.equilibrage(trie);
+			//TrieHybride.equilibrage(trie);
 			return trie;
 		}
 
