@@ -228,13 +228,14 @@ public class TrieHybride implements RTrie{
 	private static TrieHybride insert(String mot, int i, TrieHybride t){
 		//System.out.println(i);
 		if(i >= mot.length() )
-			return null;
+			return null;		
 		if(t == null){
 			t = new TrieHybride(mot.charAt(i));
 		}
-
-		t.nbDeMotsContenu++;
-
+		
+		if(!t.isFinDeMot)
+			t.nbDeMotsContenu++;
+		
 		if(mot.charAt(i) < t.key){
 			t.inf = insert(mot, i, t.inf);
 		}
@@ -636,6 +637,10 @@ public class TrieHybride implements RTrie{
 		if(lastNode.eq!=null)
 		{
 			lastNode.isFinDeMot=false;
+			
+			for(i=nodeOfWord.size()-1;i>=0;i--)
+				nodeOfWord.get(i).nbDeMotsContenu--;
+			
 			return;
 		}
 		
@@ -667,80 +672,115 @@ public class TrieHybride implements RTrie{
 			t.isFinDeMot=root.inf.isFinDeMot;
 			t.eq=root.inf.eq;
 			t.inf=root.inf.inf;
+			t.nbDeMotsContenu=root.nbDeMotsContenu-1;
 			TrieHybride ite = root.inf;
 			while(ite.sup!=null)
+			{
+				ite.nbDeMotsContenu+=root.sup.nbDeMotsContenu;
 				ite=ite.sup;
-			ite.sup=root.sup;
-			t.sup=ite;
+			}
+			
+			if(root.inf.sup!=null)
+			{
+				ite.sup=root.sup;
+				t.sup=ite;
+			}
+			else
+			{
+				t.sup=root.sup;
+			}
 			this.switchNode(t);
 			return;
 		}
+		
+		boolean action = true;
+		root.nbDeMotsContenu--;
 		
 		for(i=nodeOfWord.size()-1;i>=1;i--)
 		{
 			currentNode = nodeOfWord.get(i);		
 			TrieHybride nodeParent = nodeOfWord.get(i-1);
 			
-			if(currentNode.inf==null && currentNode.sup==null)
+			currentNode.nbDeMotsContenu--;
+			
+			if(action)
 			{
-				if(nodeParent.inf==currentNode)
+			
+				if(currentNode.inf==null && currentNode.sup==null)
 				{
-					nodeParent.inf=null;
-					return;
+					if(nodeParent.inf==currentNode)
+					{
+						nodeParent.inf=null;
+						action=false;
+					}
+					
+					if(nodeParent.sup==currentNode)
+					{
+						nodeParent.sup=null;
+						action=false;;
+					}
+					
+					nodeParent.eq=null;
+					if(nodeParent.isFinDeMot)
+						action=false;;
 				}
-				
-				if(nodeParent.sup==currentNode)
+				else
 				{
-					nodeParent.sup=null;
-					return;
+					if(currentNode.inf==null)
+					{
+						nodeParent.eq = currentNode.sup;
+						action=false;;
+					}
+					if(currentNode.sup==null)
+					{
+						nodeParent.eq = currentNode.inf;
+						action=false;;
+					}
+					
+					//Si il y a des mots dans les branches inf et sup
+					TrieHybride t = new TrieHybride();
+					t.key=currentNode.inf.key;
+					t.isFinDeMot=currentNode.inf.isFinDeMot;
+					t.eq=currentNode.inf.eq;
+					t.inf=currentNode.inf.inf;
+					t.nbDeMotsContenu=currentNode.nbDeMotsContenu;
+					TrieHybride ite = currentNode.inf;
+					while(ite.sup!=null)
+					{
+						ite.nbDeMotsContenu+=currentNode.sup.nbDeMotsContenu;
+						ite=ite.sup;
+					}
+					if(currentNode.inf.sup!=null)
+					{
+						ite.sup=currentNode.sup;
+						t.sup=ite;
+					}
+					else
+					{
+						t.sup=currentNode.sup;
+					}
+					nodeParent.eq=t;
+					action=false;
 				}
-				
-				nodeParent.eq=null;
-				if(nodeParent.isFinDeMot)
-					return;
 			}
-			else
+		}
+		
+		if(action)
+		{
+			if(root.eq!=null)
+				return;
+			
+			if(root.inf==null)
 			{
-				if(currentNode.inf==null)
-				{
-					nodeParent.eq = currentNode.sup;
-					return;
-				}
-				if(currentNode.sup==null)
-				{
-					nodeParent.eq = currentNode.inf;
-					return;
-				}
-				
-				//Si il y a des mots dans les branches inf et sup
-				TrieHybride t = new TrieHybride();
-				t.key=currentNode.inf.key;
-				t.isFinDeMot=currentNode.inf.isFinDeMot;
-				t.eq=currentNode.inf.eq;
-				t.inf=currentNode.inf.inf;
-				TrieHybride ite = currentNode.inf;
-				while(ite.sup!=null)
-					ite=ite.sup;
-				ite.sup=currentNode.sup;
-				t.sup=ite;
-				nodeParent.eq=t;
+				this.switchNode(this.sup);
 				return;
 			}
-		}
-		
-		if(root.eq!=null)
-			return;
-		
-		if(root.inf==null)
-		{
-			this.switchNode(this.sup);
-			return;
-		}
-		
-		if(root.sup==null)
-		{
-			this.switchNode(this.inf);
-			return;
+			
+			if(root.sup==null)
+			{
+				this.switchNode(this.inf);
+				return;
+			}
 		}
 				
 	}
