@@ -10,10 +10,10 @@ import org.junit.Test;
 public class PatriciaTrieTest {
 	PatriciaTrie patricia1 = new PatriciaTrie();
 	public PatriciaTrie patricia2 = new PatriciaTrie();
-	public final static String FILE = "jUnitTestFile";
-	public final static String SH1 = "shakespeare\\1henryiv";
-	public final static String SH2 = "shakespeare\\othello";
-	public final static String SHF = "shakespeare\\fusion";
+	public final static String FILE = "jUnitTestFile.txt";
+	public final static String SH1 = "shakespeare\\1henryiv.txt";
+	public final static String SH2 = "shakespeare\\othello.txt";
+	public final static String SHF = "fusion.txt";
 	
 	
 	@Test
@@ -103,7 +103,7 @@ public class PatriciaTrieTest {
 	@Test
 	public final void testConversionPatricia() {
 		RTrie p = new PatriciaTrie();
-		p.insertionListeMot(Interface.lectureFichier(FILE));		
+		p.insertionListeMot(Interface.lectureFichier(SH1));		
 		assertEquals(p.listeMots(), p.conversion().listeMots());
 	}
 	
