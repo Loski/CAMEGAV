@@ -19,6 +19,8 @@ public class TrieHybride implements RTrie{
 	private char key;
 	private boolean isFinDeMot;
 	
+	private int nbDeMotsContenu;
+
 	private TrieHybride inf; //Fils gauche
 	private TrieHybride eq; //Fils milieu
 	private TrieHybride sup; //Fils droit
@@ -31,6 +33,7 @@ public class TrieHybride implements RTrie{
 		this.sup = null;
 		this.ordreInsert=0;
 		//this.lastInsert = 0;
+		this.nbDeMotsContenu=0;
 	}
 	
 	public TrieHybride(char key) {
@@ -39,6 +42,7 @@ public class TrieHybride implements RTrie{
 		this.inf = null;
 		this.eq = null;
 		this.sup = null;
+		this.nbDeMotsContenu=0;
 	}
 	
 
@@ -50,6 +54,7 @@ public class TrieHybride implements RTrie{
 		this.sup = trie.sup;
 		this.eq= trie.eq;
 		this.ordreInsert=trie.ordreInsert;
+		this.nbDeMotsContenu=trie.nbDeMotsContenu;
 	}
 	public boolean estVide() {
 		if(this.key==Character.MAX_VALUE && this.inf==null && this.eq==null && this.sup==null && !this.isFinDeMot)
@@ -170,8 +175,8 @@ public class TrieHybride implements RTrie{
 		TrieHybride.equilibrage(this);
 	}
 	public static void equilibrage(TrieHybride t){
-		int motsInf = (t.inf == null) ? 0 : t.inf.comptageMots();
-		int motsSup = (t.sup == null) ? 0 : t.sup.comptageMots();
+		int motsInf = (t.inf == null) ? 0 : t.inf.nbDeMotsContenu;
+		int motsSup = (t.sup == null) ? 0 : t.sup.nbDeMotsContenu;
 		
 		int motsTotal = motsInf+motsSup;
 		
@@ -227,6 +232,9 @@ public class TrieHybride implements RTrie{
 		if(t == null){
 			t = new TrieHybride(mot.charAt(i));
 		}
+
+		t.nbDeMotsContenu++;
+
 		if(mot.charAt(i) < t.key){
 			t.inf = insert(mot, i, t.inf);
 		}
@@ -1122,6 +1130,11 @@ public class TrieHybride implements RTrie{
 		while(eq.eq != null)
 			eq = eq.eq;
 		return eq;
+	}
+
+	public int getNbMotsContenu()
+	{
+		return this.nbDeMotsContenu;
 	}
 
 }
