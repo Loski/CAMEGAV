@@ -9,27 +9,22 @@ public class Bench implements Runnable{
 	
 	private RTrie trie;
 	private  int nombre_file;
-	private List<ArrayList<String>> inputString;
+	private ArrayList<String> liste_mot;
 	
-	public Bench(RTrie trie, String[] nomFichier) {
-		inputString = new ArrayList<ArrayList<String>>();
-		for(String file : nomFichier){
-			inputString.add(Interface.lectureFichier(file));
-		}
-		this.trie = trie;
-	}
-	
-	public Bench(int type_trie, String[] nomFichier) {
-		inputString = new ArrayList<ArrayList<String>>();
-		for(String file : nomFichier){
-			inputString.add(Interface.lectureFichier(file));
-		}
-		this.inputString = Collections.synchronizedList(this.inputString);
+	public Bench(int type_trie, ArrayList<String> liste) {
 		this.trie = (type_trie == Interface.PATRICIA_TRIE)? new PatriciaTrie() : new TrieHybride();
+		this.liste_mot = liste;
 	}
+	
+	public Bench(RTrie trie, ArrayList<String> liste) {
+		this.trie = trie;
+		this.liste_mot = liste;
+	}
+	
+	
 	@Override
 	public void run() {
-		this.trie.insertionListeMot(this.inputString.remove(0));
+		this.trie.insertionListeMot(this.liste_mot);
 	}
 
 }

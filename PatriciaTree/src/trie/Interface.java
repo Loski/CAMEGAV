@@ -185,7 +185,7 @@ public class Interface {
 	public static ArrayList<String> lectureFichier(String name){
 		 	ArrayList<String> str = new  ArrayList<String>(); 
 	        try {
-	            FileReader c = new FileReader(name+".txt");
+	            FileReader c = new FileReader(name);
 	            BufferedReader r = new BufferedReader(c);
 	            String line = r.readLine();
 	            while (line != null) {
