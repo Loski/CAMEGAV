@@ -146,32 +146,10 @@ public class TrieHybride implements RTrie{
 			this.key = mot.charAt(0);
 		insertOnlyLetter(mot, 0, this);
 	}
-	public void insererMot(String mot) {
-		
-		/*if (mot != null && !mot.isEmpty()) {
-			
-			TrieHybride nvBranche = this.ajouterCaractere(mot.charAt(0));
-
-			TrieHybride lastNode = nvBranche;
-			
-			for (int i = 1; i < mot.length(); i++) {
-			
-				if (lastNode.eq == null)
-					lastNode.eq = new TrieHybride();
-				
-				lastNode = lastNode.eq.ajouterCaractere(mot.charAt(i));
-			}
-
-			this.lastInsert++;
-			lastNode.ordreInsert+=this.lastInsert;
-			lastNode.isFinDeMot = true; 
-		}*/
-		
-		//Pour Equilibrage
-		
+	public void insererMot(String mot) {	
 		if(this.key == Character.MAX_VALUE)
 			this.key = mot.charAt(0);
-		insert(mot, 0, this);
+		insert(mot, 0, this, new ArrayList<TrieHybride>());
 		TrieHybride.equilibrage(this);
 	}
 	public static void equilibrage(TrieHybride t){
@@ -190,10 +168,10 @@ public class TrieHybride implements RTrie{
 		
 	}
 	private void rotationDroite(){
-		  TrieHybride t = new TrieHybride(this.inf);
+		  TrieHybride t = new TrieHybride(this.inf); 
 		  this.inf = (t.sup==null) ? null : new TrieHybride(t.sup);
 		  t.sup =  new TrieHybride(this);
-		  switchNode(t);
+		  switchNode(t);  
 	}
 	
 	private void rotationGauche(){
@@ -206,7 +184,6 @@ public class TrieHybride implements RTrie{
 	public void switchNode(TrieHybride copy){
 		if(copy==null)
 			copy = new TrieHybride();
-		
 		this.key = copy.key;
 		this.isFinDeMot = copy.isFinDeMot;
 		this.inf = copy.inf;
@@ -225,36 +202,38 @@ public class TrieHybride implements RTrie{
 		this.ordreInsert=copy.ordreInsert;
 	}
 	
-	private static TrieHybride insert(String mot, int i, TrieHybride t){
+	private static TrieHybride insert(String mot, int i, TrieHybride t, ArrayList<TrieHybride> arr){
 		//System.out.println(i);
 		if(i >= mot.length() )
 			return null;		
 		if(t == null){
 			t = new TrieHybride(mot.charAt(i));
 		}
-		
-		if(!t.isFinDeMot)
-			t.nbDeMotsContenu++;
-		
+		arr.add(t);
 		if(mot.charAt(i) < t.key){
-			t.inf = insert(mot, i, t.inf);
+			t.inf = insert(mot, i, t.inf, arr);
 		}
 		else if(mot.charAt(i) > t.key){
-			t.sup = insert(mot, i, t.sup);
+			t.sup = insert(mot, i, t.sup, arr);
 
 		}
 		else{
-			TrieHybride tmp =  insert(mot, i +1, t.eq);
+			TrieHybride tmp =  insert(mot, i +1, t.eq, arr);
 			if(tmp == null){
+				if(t.isFinDeMot)
+					return t;
 				t.isFinDeMot = true;
-				t.ordreInsert = t.lastInsert;
-				t.lastInsert++;
+				t.ordreInsert = TrieHybride.lastInsert;
+				TrieHybride.lastInsert++;
+				for(TrieHybride tt : arr){
+					tt.nbDeMotsContenu++;
+				}
 				//System.out.println("ORDRE :"+lastInsert);
 			}else
 				t.eq = tmp;
 		}
-		/*if(t!=null)
-			equilibrage(t);*/
+		if(t!=null)
+			equilibrage(t);
 		return t;
 	}
 
@@ -872,19 +851,15 @@ public class TrieHybride implements RTrie{
 		    System.out.println ("Erreur lors de la lecture : " + exception.getMessage());
 		}
 	}
-	
 
-	
 	public String parcourirArbreHTML(boolean showNullPointer,String clazz){
 				
 		String str = "";
-		
-		if(this.isFinDeMot)
-			str = "\n<li class='wordEnd "+clazz+"'>" + this.key +", "+this.ordreInsert+"\n";
-		else
-			str = "\n<li class='"+clazz+"'>" + this.key +"\n";
-		
-		
+
+        if(this.isFinDeMot)
+            str = "\n<li class='wordEnd "+clazz+"'>" + this.key +", "+this.nbDeMotsContenu+"\n";
+        else
+            str = "\n<li class='"+clazz+"'>" + this.key +" CONTIENT "+ this.nbDeMotsContenu+ "\n";
 		str+="\n\t<ul>";
 		
 		if(this.inf != null){

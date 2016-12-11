@@ -18,8 +18,14 @@ public class PatriciaTrieTest {
 	
 	@Test
 	public final void testFusion(){
-		assertEquals(PatriciaTrie.fusion(PatriciaTrie.lectureFichier(SH1), PatriciaTrie.lectureFichier(SH2)), PatriciaTrie.lectureFichier(SHF));
-		assertFalse((PatriciaTrie.fusion(PatriciaTrie.lectureFichier(FILE), PatriciaTrie.lectureFichier(SH2))).equals(PatriciaTrie.lectureFichier(SHF)));
+		patricia1.insertionListeMot(Interface.lectureFichier(SH1));
+		patricia2.insertionListeMot(Interface.lectureFichier(SH2));
+		PatriciaTrie patriciaF = new PatriciaTrie();
+		patriciaF.insertionListeMot(Interface.lectureFichier(SHF));
+		assertEquals(PatriciaTrie.fusion(patricia1, patricia2), patriciaF);
+		patricia1 = new PatriciaTrie();
+		patricia1.insertionListeMot(Interface.lectureFichier(FILE));
+		assertFalse(PatriciaTrie.fusion(patricia1, patricia2).equals(patriciaF));
 	}
 	@Test
 	public final void testIndexGetKey() {
@@ -73,7 +79,7 @@ public class PatriciaTrieTest {
 
 	@Test
 	public final void testRechercherMot() {
-		patricia1 = patricia1.lectureFichier(FILE);
+		patricia1.insertionListeMot(Interface.lectureFichier(FILE));
 		assertTrue(patricia1.recherche("professeur"));
 		assertFalse(patricia1.recherche("professeur!"));
 		assertFalse(patricia1.recherche("proffesseur!"));
@@ -82,17 +88,20 @@ public class PatriciaTrieTest {
 
 	@Test
 	public final void testComptageMots() {
-		assertEquals(PatriciaTrie.lectureFichier(FILE).comptageMots(), 36);
+		patricia1.insertionListeMot(Interface.lectureFichier(FILE));
+		assertEquals(patricia1.comptageMots(), 36);
 	}
 
 	@Test
 	public final void testComptageNil() {
-		assertEquals(PatriciaTrie.lectureFichier(FILE).comptageNil(), 36);
+		patricia1.insertionListeMot(Interface.lectureFichier(FILE));
+		assertEquals(patricia1.comptageNil(), 1906);
 	}
 
 	@Test
 	public final void testHauteur() {
-		assertEquals(PatriciaTrie.lectureFichier(FILE).hauteur(), 4);
+		patricia1.insertionListeMot(Interface.lectureFichier(FILE));
+		assertEquals(patricia1.hauteur(), 4);
 	}
 
 	@Test
@@ -102,20 +111,15 @@ public class PatriciaTrieTest {
 
 	@Test
 	public final void testConversionPatricia() {
-		RTrie p = new PatriciaTrie();
-		p.insertionListeMot(Interface.lectureFichier(SH1));		
-		assertEquals(p.listeMots(), p.conversion().listeMots());
+		patricia1.insertionListeMot(Interface.lectureFichier(SH1));	
+		assertEquals(patricia1.listeMots(), patricia1.conversion().listeMots());
 	}
 	
-	@Ignore
+	@Test
 	public final void testConversionHybrid() {
 		RTrie p = new TrieHybride();
 		p.insertionListeMot(Interface.lectureFichier(FILE));		
 		assertEquals(p.listeMots(), p.conversion().listeMots());
 	}
 
-	@Test
-	public final void testIsEmpty() {
-		assertTrue(new PatriciaTrie().estVide());
-	}
 }

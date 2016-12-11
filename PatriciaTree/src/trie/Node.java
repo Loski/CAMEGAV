@@ -101,7 +101,10 @@ public class Node {
 				while(tmp.getEq()!= null){
 					tmp = tmp.getEq();
 				}
-				tmp.setEq((TrieHybride) this.getLink().conversion());
+				TrieHybride buffer = (TrieHybride) this.getLink().conversion();
+				if(buffer!=null){
+					tmp.setEq(buffer);
+				}
 			}
 			return trie;	
 		}

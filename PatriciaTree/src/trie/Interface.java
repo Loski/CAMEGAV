@@ -135,6 +135,7 @@ public class Interface {
 			System.out.println("L'arbre a une profondeur moyenne de " + trie.profondeurMoyenne() +" .");
 			break;
 		case CONVERSION:
+			this.trie = trie.conversion();
 			break;
 		case HTML:
 			trie.printHTML("trie"+ZonedDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-uu_hh-mm-ss")),true);
@@ -144,7 +145,8 @@ public class Interface {
 				System.out.println("Saisir votre fichier : ");
 				PatriciaTrie copy = new PatriciaTrie();
 				copy.insertionListeMot(Interface.lectureFichier(saisirMot()));
-					this.trie=PatriciaTrie.fusion((PatriciaTrie) this.trie, copy);
+				this.trie=PatriciaTrie.fusion((PatriciaTrie) this.trie, copy);
+				System.out.println("Trie fusionné");
 			}
 		default:
 			System.out.println("Action incorrecte !");
