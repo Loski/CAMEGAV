@@ -8,7 +8,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class TrieHybride implements RTrie{
@@ -150,14 +149,15 @@ public class TrieHybride implements RTrie{
 		if(this.key == Character.MAX_VALUE)
 			this.key = mot.charAt(0);
 		insert(mot, 0, this, new ArrayList<TrieHybride>());
-		TrieHybride.equilibrage(this);
+		//TrieHybride.equilibrage(this);
 	}
 	public static void equilibrage(TrieHybride t){
 		int motsInf = (t.inf == null) ? 0 : t.inf.nbDeMotsContenu;
 		int motsSup = (t.sup == null) ? 0 : t.sup.nbDeMotsContenu;
 		
 		int motsTotal = motsInf+motsSup;
-		
+		if(motsTotal == 0)
+			return;
 		if(motsInf<motsTotal/2){
 			t.rotationGauche();
 		}
@@ -171,7 +171,23 @@ public class TrieHybride implements RTrie{
 		  TrieHybride t = new TrieHybride(this.inf); 
 		  this.inf = (t.sup==null) ? null : new TrieHybride(t.sup);
 		  t.sup =  new TrieHybride(this);
-		  switchNode(t);  
+		  
+		  switchNode(t);
+		  if(this.sup!=null){
+			  TrieHybride tmp = this.sup;
+			  tmp.nbDeMotsContenu = 0;
+			  if(tmp.isFinDeMot)
+				  	tmp.nbDeMotsContenu++;
+			  tmp.nbDeMotsContenu += (tmp.eq== null)? 0 : tmp.eq.nbDeMotsContenu;
+			  tmp.nbDeMotsContenu += (tmp.inf == null)? 0 : tmp.inf.nbDeMotsContenu;
+			  tmp.nbDeMotsContenu += (tmp.sup == null)? 0 : tmp.sup.nbDeMotsContenu;
+		  }
+		  this.nbDeMotsContenu = 0;
+		  if(this.isFinDeMot)
+			  this.nbDeMotsContenu++;
+		  this.nbDeMotsContenu += (this.eq== null)? 0 : this.eq.nbDeMotsContenu;
+		  this.nbDeMotsContenu += (this.inf == null)? 0 : this.inf.nbDeMotsContenu;
+		  this.nbDeMotsContenu += (this.sup == null)? 0 : this.sup.nbDeMotsContenu;
 	}
 	
 	private void rotationGauche(){
@@ -179,6 +195,19 @@ public class TrieHybride implements RTrie{
 		  this.sup = (t.inf==null) ? null : new TrieHybride(t.inf);
 		  t.inf = new TrieHybride(this);
 		  switchNode(t);
+		  if(this.inf!=null){
+			  TrieHybride tmp = this.inf;
+			  tmp.nbDeMotsContenu = 0;
+			  if(tmp.isFinDeMot)
+			  	tmp.nbDeMotsContenu++;
+			  tmp.nbDeMotsContenu += (tmp.eq== null)? 0 : tmp.eq.nbDeMotsContenu;
+			  tmp.nbDeMotsContenu += (tmp.inf == null)? 0 : tmp.inf.nbDeMotsContenu;
+			  tmp.nbDeMotsContenu += (tmp.sup == null)? 0 : tmp.sup.nbDeMotsContenu;
+		  }
+		  this.nbDeMotsContenu = 0;
+		  this.nbDeMotsContenu += (this.eq== null)? 0 : this.eq.nbDeMotsContenu;
+		  this.nbDeMotsContenu += (this.inf == null)? 0 : this.inf.nbDeMotsContenu;
+		  this.nbDeMotsContenu += (this.sup == null)? 0 : this.sup.nbDeMotsContenu;
 	}
 	
 	public void switchNode(TrieHybride copy){

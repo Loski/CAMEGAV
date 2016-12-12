@@ -8,11 +8,8 @@ public class PatriciaTest {
 
 	public static void main(String[] args) {
 		RTrie p = new PatriciaTrie();
-		p.insertionListeMot(Interface.lectureFichier(FILE));
-		p.printHTML("Switch", true);
-		
-		System.out.println(p.listeMots());
-		ArrayList<String> o = (ArrayList<String>) p.listeMots();
-		System.out.println(p.conversion().listeMots());
+		p.insererMot("MAGICIEN");
+		p.insererMot("MAGICIENNE");
+		p.printHTML("dl", true);
 	}
 }
