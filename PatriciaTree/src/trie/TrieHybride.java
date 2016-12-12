@@ -722,15 +722,18 @@ public class TrieHybride implements RTrie{
 						action=false;
 					}
 					
-					if(nodeParent.sup==currentNode)
+					else if(nodeParent.sup==currentNode)
 					{
 						nodeParent.sup=null;
 						action=false;;
 					}
 					
-					nodeParent.eq=null;
-					if(nodeParent.isFinDeMot)
-						action=false;;
+					else
+					{
+						nodeParent.eq=null;
+						if(nodeParent.isFinDeMot)
+							action=false;
+					}
 				}
 				else
 				{
@@ -739,36 +742,38 @@ public class TrieHybride implements RTrie{
 						nodeParent.eq = currentNode.sup;
 						action=false;;
 					}
-					if(currentNode.sup==null)
+					else if(currentNode.sup==null)
 					{
 						nodeParent.eq = currentNode.inf;
 						action=false;;
 					}
-					
-					//Si il y a des mots dans les branches inf et sup
-					TrieHybride t = new TrieHybride();
-					t.key=currentNode.inf.key;
-					t.isFinDeMot=currentNode.inf.isFinDeMot;
-					t.eq=currentNode.inf.eq;
-					t.inf=currentNode.inf.inf;
-					t.nbDeMotsContenu=currentNode.nbDeMotsContenu;
-					TrieHybride ite = currentNode.inf;
-					while(ite.sup!=null)
-					{
-						ite.nbDeMotsContenu+=currentNode.sup.nbDeMotsContenu;
-						ite=ite.sup;
-					}
-					if(currentNode.inf.sup!=null)
-					{
-						ite.sup=currentNode.sup;
-						t.sup=ite;
-					}
 					else
 					{
-						t.sup=currentNode.sup;
+						//Si il y a des mots dans les branches inf et sup
+						TrieHybride t = new TrieHybride();
+						t.key=currentNode.inf.key;
+						t.isFinDeMot=currentNode.inf.isFinDeMot;
+						t.eq=currentNode.inf.eq;
+						t.inf=currentNode.inf.inf;
+						t.nbDeMotsContenu=currentNode.nbDeMotsContenu;
+						TrieHybride ite = currentNode.inf;
+						while(ite.sup!=null)
+						{
+							ite.nbDeMotsContenu+=currentNode.sup.nbDeMotsContenu;
+							ite=ite.sup;
+						}
+						if(currentNode.inf.sup!=null)
+						{
+							ite.sup=currentNode.sup;
+							t.sup=ite;
+						}
+						else
+						{
+							t.sup=currentNode.sup;
+						}
+						nodeParent.eq=t;
+						action=false;
 					}
-					nodeParent.eq=t;
-					action=false;
 				}
 			}
 		}

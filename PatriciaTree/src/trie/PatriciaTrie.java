@@ -79,6 +79,8 @@ public class PatriciaTrie implements RTrie, Serializable{
 			  int n = mot.length();
 			  int index = PatriciaTrie.getIndexKey(mot);
 			  Node node = t.frère[index];
+			  if(node==null)
+				  return t;
 			  String key = node.getKey();
 			  
 			  int prefixe = prefixe(mot, key);
