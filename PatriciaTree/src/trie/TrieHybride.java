@@ -891,9 +891,9 @@ public class TrieHybride implements RTrie{
 		String str = "";
 
         if(this.isFinDeMot)
-            str = "\n<li class='wordEnd "+clazz+"'>" + this.key +", "+this.nbDeMotsContenu+"\n";
+            str = "\n<li class='wordEnd "+clazz+"'>" + this.key +", "+this.ordreInsert+"\n";
         else
-            str = "\n<li class='"+clazz+"'>" + this.key +" CONTIENT "+ this.nbDeMotsContenu+ "\n";
+            str = "\n<li class='"+clazz+"'>" + this.key+"\n";
 		str+="\n\t<ul>";
 		
 		if(this.inf != null){
